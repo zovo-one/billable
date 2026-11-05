@@ -1,0 +1,1218 @@
+{
+  "extName": {
+    "message": "Billable · Time Tracker & Invoices",
+    "description": "Extension name shown in the Chrome Web Store and chrome://extensions (75 chars max)."
+  },
+  "extDesc": {
+    "message": "Track billable hours per client and watch earnings tick up live. CSV timesheets, PDF invoices. No account.",
+    "description": "Extension short description (132 chars max for CWS)."
+  },
+  "actionTitle": {
+    "message": "Billable",
+    "description": "Toolbar icon tooltip."
+  },
+  "badgePro": {
+    "message": "Pro",
+    "description": "Pro tier badge label."
+  },
+  "badgeFree": {
+    "message": "Free",
+    "description": "Free tier badge label."
+  },
+  "popTitle": {
+    "message": "Billable",
+    "description": "Product name shown in page headers and the popup title."
+  },
+  "pageThemeLabel": {
+    "message": "Page theme",
+    "description": "aria-label for the page-theme radiogroup."
+  },
+  "themeAuto": {
+    "message": "Auto",
+    "description": "Page theme option: follow the system theme."
+  },
+  "themeLight": {
+    "message": "Light",
+    "description": "Page theme option: light."
+  },
+  "themeDark": {
+    "message": "Dark",
+    "description": "Page theme option: dark."
+  },
+  "upgradeBtn": {
+    "message": "Get Pro",
+    "description": "Upgrade button inside cap-hit nudges."
+  },
+  "laterBtn": {
+    "message": "Maybe later",
+    "description": "Dismiss button inside cap-hit nudges."
+  },
+  "activateBtn": {
+    "message": "Activate",
+    "description": "License key activation submit button."
+  },
+  "deactivateBtn": {
+    "message": "Deactivate",
+    "description": "License deactivation button."
+  },
+  "licenseHeading": {
+    "message": "License",
+    "description": "License section heading in Options."
+  },
+  "footerHelp": {
+    "message": "Help",
+    "description": "Footer link to the support page."
+  },
+  "footerPrivacy": {
+    "message": "Privacy",
+    "description": "Footer link to the privacy policy."
+  },
+  "popHeroToday": {
+    "message": "Today",
+    "description": "Popup hero caption when idle (today's total across clients)."
+  },
+  "popHeroRunning": {
+    "message": "Now earning",
+    "description": "Popup hero caption while a timer is running."
+  },
+  "popHeroIdle": {
+    "message": "Press Start, watch what you earn tick up.",
+    "description": "Popup hero hint shown when no timer is running."
+  },
+  "popStart": {
+    "message": "Start billing",
+    "description": "Start button label."
+  },
+  "popStop": {
+    "message": "Stop",
+    "description": "Stop button label."
+  },
+  "popStartAria": {
+    "message": "Start billing time on this client",
+    "description": "aria-label for the start button."
+  },
+  "popStopAria": {
+    "message": "Stop the timer",
+    "description": "aria-label for the stop button."
+  },
+  "popClientCaption": {
+    "message": "Client",
+    "description": "Caption above the client picker in the popup."
+  },
+  "popClientAria": {
+    "message": "Client to bill",
+    "description": "aria-label for the client picker select."
+  },
+  "popPin": {
+    "message": "Pin overlay to this page",
+    "description": "Button that pins the live earnings overlay to the current page."
+  },
+  "popPinAria": {
+    "message": "Pin the live earnings overlay to this page",
+    "description": "aria-label for the pin-overlay button."
+  },
+  "popPinOk": {
+    "message": "Overlay pinned. Drag it anywhere on the page.",
+    "description": "Status note after the overlay is pinned successfully."
+  },
+  "popPinFail": {
+    "message": "Overlay not available on this page",
+    "description": "Status note when the overlay cannot be injected on the current page."
+  },
+  "popCsv": {
+    "message": "Export CSV",
+    "description": "CSV quick-export button in the popup."
+  },
+  "popCsvAria": {
+    "message": "Export the timesheet as a CSV file",
+    "description": "aria-label for the CSV quick-export button."
+  },
+  "popCsvFail": {
+    "message": "Export failed. Try again.",
+    "description": "Status note when the CSV export fails."
+  },
+  "popTodayLabel": {
+    "message": "Today",
+    "description": "Label for today's total in the popup totals row."
+  },
+  "popWeekLabel": {
+    "message": "This week",
+    "description": "Label for this week's total in the popup totals row."
+  },
+  "popEmptyHead": {
+    "message": "Add a client, earn the hour",
+    "description": "Empty-state heading when there are no clients."
+  },
+  "popEmptyText": {
+    "message": "Name and hourly rate, then the ticker shows what you earn.",
+    "description": "Empty-state body text when there are no clients."
+  },
+  "popEmptyAdd": {
+    "message": "Add my first client",
+    "description": "Empty-state button that opens Options to add the first client."
+  },
+  "popEmptyAddAria": {
+    "message": "Add your first client in Options",
+    "description": "aria-label for the empty-state add-client button."
+  },
+  "popProHeading": {
+    "message": "Billable Pro",
+    "description": "Heading of the locked Pro rows card in the popup."
+  },
+  "popProInvoice": {
+    "message": "PDF invoices",
+    "description": "Locked Pro row: PDF invoices."
+  },
+  "popProInvoiceHint": {
+    "message": "Your rates, your branding, itemized by day.",
+    "description": "Hint under the locked PDF invoices row."
+  },
+  "popProInvoiceAria": {
+    "message": "PDF invoices, a Pro feature. Opens Options.",
+    "description": "aria-label for the locked PDF invoices row."
+  },
+  "popProNotes": {
+    "message": "Entry notes",
+    "description": "Locked Pro row: entry notes."
+  },
+  "popProNotesHint": {
+    "message": "Remember what each block of time was for.",
+    "description": "Hint under the locked entry notes row."
+  },
+  "popProNotesAria": {
+    "message": "Entry notes, a Pro feature. Opens Options.",
+    "description": "aria-label for the locked entry notes row."
+  },
+  "popProBackup": {
+    "message": "Backup & restore",
+    "description": "Locked Pro row: backup and restore."
+  },
+  "popProBackupHint": {
+    "message": "One JSON file carries every client and entry.",
+    "description": "Hint under the locked backup row."
+  },
+  "popProBackupAria": {
+    "message": "Backup and restore, a Pro feature. Opens Options.",
+    "description": "aria-label for the locked backup row."
+  },
+  "popProFine": {
+    "message": "Pro features live in Options. These rows open the right section.",
+    "description": "Fine print under the locked Pro rows in the popup."
+  },
+  "popProActive": {
+    "message": "active on this device",
+    "description": "Pro status line in the popup, shown after the Pro badge."
+  },
+  "popProManageHint": {
+    "message": "Invoices, notes, rounding, and backup are in Options.",
+    "description": "Hint under the Pro-active card in the popup."
+  },
+  "popOptionsBtn": {
+    "message": "Options",
+    "description": "Footer button that opens the Options page."
+  },
+  "optTitle": {
+    "message": "Billable settings · earn every hour",
+    "description": "Options page title."
+  },
+  "optNavLabel": {
+    "message": "Options",
+    "description": "Options label in the page header next to the product name."
+  },
+  "optClientsHeading": {
+    "message": "Clients",
+    "description": "Clients section heading."
+  },
+  "optClientsSub": {
+    "message": "A client is a name, an hourly rate, a currency, and a color. Free includes 2 clients; Pro is unlimited.",
+    "description": "Clients section subheading."
+  },
+  "optClientsEmptyHead": {
+    "message": "No clients yet",
+    "description": "Clients empty-state heading."
+  },
+  "optClientsEmpty": {
+    "message": "Add one below. It shows up in the popup picker instantly.",
+    "description": "Clients empty-state body."
+  },
+  "optEditBtn": {
+    "message": "Edit",
+    "description": "Edit button on client and entry rows."
+  },
+  "optDeleteBtn": {
+    "message": "Delete",
+    "description": "Delete button on client and entry rows."
+  },
+  "optConfirmDelete": {
+    "message": "Delete client",
+    "description": "Confirm button in the inline client-delete confirmation."
+  },
+  "optCancel": {
+    "message": "Cancel",
+    "description": "Cancel button in forms and confirmations."
+  },
+  "optClientNameLabel": {
+    "message": "Client name",
+    "description": "Label for the client name field."
+  },
+  "optClientNamePh": {
+    "message": "Acme Inc",
+    "description": "Placeholder for the client name field (fictional example company)."
+  },
+  "optClientRateLabel": {
+    "message": "Hourly rate",
+    "description": "Label for the hourly rate field."
+  },
+  "optClientRatePh": {
+    "message": "85",
+    "description": "Placeholder for the hourly rate field (a number in major currency units)."
+  },
+  "optClientCurrencyLabel": {
+    "message": "Currency",
+    "description": "Label for the currency select."
+  },
+  "optClientColorLabel": {
+    "message": "Color",
+    "description": "Label for the client color swatch group."
+  },
+  "colorOlive": {
+    "message": "Olive",
+    "description": "aria-label for the olive color swatch."
+  },
+  "colorIndigo": {
+    "message": "Indigo",
+    "description": "aria-label for the indigo color swatch."
+  },
+  "colorGreen": {
+    "message": "Green",
+    "description": "aria-label for the green color swatch."
+  },
+  "colorTeal": {
+    "message": "Teal",
+    "description": "aria-label for the teal color swatch."
+  },
+  "colorAmber": {
+    "message": "Amber",
+    "description": "aria-label for the amber color swatch."
+  },
+  "colorMagenta": {
+    "message": "Magenta",
+    "description": "aria-label for the magenta color swatch."
+  },
+  "colorViolet": {
+    "message": "Violet",
+    "description": "aria-label for the violet color swatch."
+  },
+  "colorRed": {
+    "message": "Red",
+    "description": "aria-label for the red color swatch."
+  },
+  "optClientAdd": {
+    "message": "Add client",
+    "description": "Submit button for the new-client form."
+  },
+  "optClientSave": {
+    "message": "Save changes",
+    "description": "Submit button when editing a client or entry."
+  },
+  "optClientsCapNote": {
+    "message": "Free includes 2 clients. Pro removes the cap.",
+    "description": "Note shown when the free client cap is reached."
+  },
+  "optClientsNudge": {
+    "message": "Pro gives you unlimited clients, so every project gets its own rate.",
+    "description": "Upgrade nudge text in the clients section."
+  },
+  "optClientsCapHit": {
+    "message": "You hit the free 2-client limit. Pro removes the cap, so every project gets its own rate.",
+    "description": "Form message when the free client cap blocks adding a client."
+  },
+  "optErrRateEmpty": {
+    "message": "Enter an hourly rate, like 85 or 85.50.",
+    "description": "Validation error: rate field left empty."
+  },
+  "optErrRateNumeric": {
+    "message": "The rate must be a number, like 85 or 85.50.",
+    "description": "Validation error: rate is not a number."
+  },
+  "optErrRateDecimals": {
+    "message": "The rate can have at most 2 decimals.",
+    "description": "Validation error: rate has more than 2 decimal places."
+  },
+  "optErrRateNegative": {
+    "message": "The rate cannot be negative.",
+    "description": "Validation error: rate is negative."
+  },
+  "optErrRateLarge": {
+    "message": "That rate is too large.",
+    "description": "Validation error: rate exceeds the maximum."
+  },
+  "optErrClientInvalid": {
+    "message": "Give the client a name (up to 60 characters).",
+    "description": "Validation error: client name missing or too long."
+  },
+  "optErrStorage": {
+    "message": "Could not save. Local storage hiccup, try again.",
+    "description": "Generic storage failure while saving a client."
+  },
+  "optErrStorageEntry": {
+    "message": "Could not save. Try again.",
+    "description": "Generic storage failure while saving a time entry."
+  },
+  "optErrStorageRestore": {
+    "message": "Could not restore. Local storage hiccup, nothing changed.",
+    "description": "Storage failure while restoring a backup; reassures that data is unchanged."
+  },
+  "optErrStorageLicense": {
+    "message": "Could not save the key. Try again.",
+    "description": "Storage failure while saving a license key."
+  },
+  "optClientAdded": {
+    "message": "Client added. It is in the popup picker now.",
+    "description": "Confirmation after adding a client."
+  },
+  "optClientSaved": {
+    "message": "Changes saved. Past entries keep the rate they recorded.",
+    "description": "Confirmation after editing a client."
+  },
+  "optClientDeleted": {
+    "message": "Client deleted. Its entries stayed in the timesheet.",
+    "description": "Confirmation after deleting a client."
+  },
+  "optClientDeleteAsk": {
+    "message": "Delete \"$1\"? $2 entries stay in the timesheet as \"(deleted client)\".",
+    "description": "Inline client-delete confirmation for 2+ kept entries. $1 = client name, $2 = kept entry count."
+  },
+  "optClientDeleteAskOne": {
+    "message": "Delete \"$1\"? 1 entry stays in the timesheet as \"(deleted client)\".",
+    "description": "Inline client-delete confirmation for exactly 1 kept entry. $1 = client name."
+  },
+  "optClientDeleteTimer": {
+    "message": " The timer running on this client will be discarded.",
+    "description": "Appended to the delete confirmation when a live timer runs on the client (leading space is intentional)."
+  },
+  "optEntriesHeading": {
+    "message": "Time entries",
+    "description": "Time entries section heading."
+  },
+  "optEntriesSub": {
+    "message": "Every stopped timer lands here. Add forgotten time by hand, edit, or delete. Amounts use the rate snapshot saved with each entry.",
+    "description": "Time entries section subheading."
+  },
+  "optFilterClient": {
+    "message": "Client",
+    "description": "Label for client filter and client select fields."
+  },
+  "optFilterAll": {
+    "message": "All clients",
+    "description": "Default option in client filter selects."
+  },
+  "optFilterFrom": {
+    "message": "From",
+    "description": "Label for the start-date filter."
+  },
+  "optFilterTo": {
+    "message": "To",
+    "description": "Label for the end-date filter."
+  },
+  "optEntriesEmptyHead": {
+    "message": "No entries yet",
+    "description": "Entries empty-state heading."
+  },
+  "optEntriesEmpty": {
+    "message": "Start a timer in the popup, or add forgotten time by hand below.",
+    "description": "Entries empty-state body."
+  },
+  "optEntriesNoMatch": {
+    "message": "No entries match these filters.",
+    "description": "Table info row when filters hide every entry."
+  },
+  "optEntriesOverflow": {
+    "message": "Showing the latest $1 of $2 entries. Narrow the filters.",
+    "description": "Table info row when the entry list is capped. $1 = rows shown, $2 = total matching entries."
+  },
+  "optColClient": {
+    "message": "Client",
+    "description": "Entries table column: client."
+  },
+  "optColDate": {
+    "message": "Date",
+    "description": "Entries table column: date."
+  },
+  "optColStart": {
+    "message": "Start",
+    "description": "Entries table column: start time."
+  },
+  "optColEnd": {
+    "message": "End",
+    "description": "Entries table column: end time."
+  },
+  "optColDuration": {
+    "message": "Duration",
+    "description": "Entries table column: duration."
+  },
+  "optColAmount": {
+    "message": "Amount",
+    "description": "Entries table column: amount earned."
+  },
+  "optColNote": {
+    "message": "Note",
+    "description": "Entries table column: note."
+  },
+  "optColActions": {
+    "message": "Actions",
+    "description": "Screen-reader name for the entries table actions column."
+  },
+  "optQuotaWarn": {
+    "message": "Local storage is nearly full. Export a CSV backup, then delete old entries.",
+    "description": "Warning banner when local storage approaches the quota."
+  },
+  "optEntryFormCaption": {
+    "message": "Add time by hand",
+    "description": "Caption above the manual entry form."
+  },
+  "optEntryDate": {
+    "message": "Date",
+    "description": "Label for the manual entry date field."
+  },
+  "optEntryStart": {
+    "message": "Start",
+    "description": "Label for the manual entry start-time field."
+  },
+  "optEntryEnd": {
+    "message": "End",
+    "description": "Label for the manual entry end-time field."
+  },
+  "optEntryNote": {
+    "message": "Note",
+    "description": "Label for the entry note field (Pro)."
+  },
+  "optEntryNotePh": {
+    "message": "What was this time for?",
+    "description": "Placeholder for the entry note field."
+  },
+  "optEntryAdd": {
+    "message": "Add entry",
+    "description": "Submit button for the manual entry form."
+  },
+  "optEntrySave": {
+    "message": "Save changes",
+    "description": "Submit button when editing a time entry."
+  },
+  "optEntryDeleted": {
+    "message": "Entry deleted.",
+    "description": "Confirmation after deleting a time entry."
+  },
+  "optErrEntryClient": {
+    "message": "Add a client first. Entries bill against one.",
+    "description": "Validation error: manual entry attempted with no clients."
+  },
+  "optErrEntryTimes": {
+    "message": "Pick a valid date and start/end times.",
+    "description": "Validation error: manual entry date or times invalid."
+  },
+  "optErrEntryOrder": {
+    "message": "The end time is before the start time.",
+    "description": "Validation error: manual entry end precedes start."
+  },
+  "optErrQuota": {
+    "message": "Local storage is full. Export a CSV, then delete old entries.",
+    "description": "Error when the storage quota blocks saving an entry."
+  },
+  "optEntryAdded": {
+    "message": "Entry added at the client’s current rate.",
+    "description": "Confirmation after adding a manual entry."
+  },
+  "optEntrySaved": {
+    "message": "Entry updated.",
+    "description": "Confirmation after editing a time entry."
+  },
+  "optEntriesNudge": {
+    "message": "Pro adds a note to any entry · what the 40-minute gap was for, which ticket it belongs to.",
+    "description": "Upgrade nudge text in the entries section."
+  },
+  "optCsvHeading": {
+    "message": "Save your timesheet as CSV",
+    "description": "CSV export section heading."
+  },
+  "optCsvSub": {
+    "message": "A CSV file of your entries, opens clean in Excel and Google Sheets. Free, always.",
+    "description": "CSV export section subheading."
+  },
+  "optCsvExport": {
+    "message": "Export CSV",
+    "description": "CSV export button in Options."
+  },
+  "optErrRange": {
+    "message": "The From date is after the To date.",
+    "description": "Validation error: inverted date range."
+  },
+  "optCsvEmpty": {
+    "message": "No entries match these filters. Nothing to export.",
+    "description": "Message when a CSV export would contain no rows."
+  },
+  "optCsvDone": {
+    "message": "CSV downloaded. $1 entries.",
+    "description": "Confirmation after a CSV export of 2+ entries. $1 = entry count."
+  },
+  "optCsvDoneOne": {
+    "message": "CSV downloaded. 1 entry.",
+    "description": "Confirmation after a CSV export of exactly 1 entry."
+  },
+  "optCsvFail": {
+    "message": "Export failed. Try again.",
+    "description": "Error when the CSV export in Options fails."
+  },
+  "optCsvNudge": {
+    "message": "That CSV is your timesheet, done. Pro turns a range like it into a branded PDF invoice in one click.",
+    "description": "Post-success upgrade nudge shown once per install after a completed CSV export in Options (free tier)."
+  },
+  "optInvoiceHeading": {
+    "message": "Invoices that get you paid",
+    "description": "Invoice section heading (Pro)."
+  },
+  "optInvoiceSub": {
+    "message": "Branded PDF invoices, itemized by day, plus the billing rules your clients expect. Generated on this device.",
+    "description": "Invoice section subheading."
+  },
+  "optRoundingLabel": {
+    "message": "Round each entry up to",
+    "description": "Label for the billing rounding rule selector (Pro)."
+  },
+  "optRoundingHint": {
+    "message": "Applies to CSV and PDF display only. Stored durations never change.",
+    "description": "Hint under the rounding rule selector."
+  },
+  "optRoundingNone": {
+    "message": "None",
+    "description": "Rounding option: no rounding."
+  },
+  "optRounding6": {
+    "message": "6 min",
+    "description": "Rounding option: round up to 6 minutes."
+  },
+  "optRounding15": {
+    "message": "15 min",
+    "description": "Rounding option: round up to 15 minutes."
+  },
+  "optSenderLabel": {
+    "message": "Invoice sender line",
+    "description": "Label for the invoice sender line field (Pro)."
+  },
+  "optSenderHint": {
+    "message": "Your name or studio, printed at the top of each invoice.",
+    "description": "Hint under the invoice sender line field."
+  },
+  "optSenderPh": {
+    "message": "Jane Doe Studio",
+    "description": "Placeholder for the invoice sender line field (fictional example)."
+  },
+  "optInvoiceGenerate": {
+    "message": "Generate PDF invoice",
+    "description": "Button that generates the PDF invoice (Pro)."
+  },
+  "optInvoiceAria": {
+    "message": "Generate a PDF invoice",
+    "description": "aria-label for the generate-invoice button."
+  },
+  "optErrInvoiceClient": {
+    "message": "Add a client first. Invoices bill against one.",
+    "description": "Validation error: invoice attempted with no clients."
+  },
+  "optInvoiceEmpty": {
+    "message": "No entries for this client in that range.",
+    "description": "Message when an invoice would contain no entries."
+  },
+  "optInvoiceMixed": {
+    "message": "This range mixes currencies ($1). Split it so one invoice has one currency.",
+    "description": "Refusal when an invoice range spans currencies. $1 = comma-separated currency codes."
+  },
+  "optInvoiceDone": {
+    "message": "Invoice downloaded. Check it before you send it.",
+    "description": "Confirmation after generating a PDF invoice."
+  },
+  "optInvoiceFail": {
+    "message": "Could not generate the PDF. Try again.",
+    "description": "Error when PDF invoice generation fails."
+  },
+  "optInvoiceNudge": {
+    "message": "Pro turns any date range into a branded PDF invoice, itemized by day, with your rates and rounding rules.",
+    "description": "Upgrade nudge text in the invoice section."
+  },
+  "optBackupHeading": {
+    "message": "Backup & restore, never lose an hour",
+    "description": "Backup section heading (Pro)."
+  },
+  "optBackupSub": {
+    "message": "Clients, entries, and settings as one JSON file. Restoring replaces current data on this device after a full validation pass; a bad file changes nothing.",
+    "description": "Backup section subheading."
+  },
+  "optBackupExportLabel": {
+    "message": "Export",
+    "description": "Label for the backup export row."
+  },
+  "optBackupExportHint": {
+    "message": "Download all of your Billable data as one JSON file.",
+    "description": "Hint under the backup export row."
+  },
+  "optBackupExportBtn": {
+    "message": "Export JSON",
+    "description": "Backup export button."
+  },
+  "optBackupExportAria": {
+    "message": "Download all Billable data as a JSON file",
+    "description": "aria-label for the backup export button."
+  },
+  "optBackupImportLabel": {
+    "message": "Restore",
+    "description": "Label for the backup restore row."
+  },
+  "optBackupImportHint": {
+    "message": "Restoring replaces all current data on this device.",
+    "description": "Hint under the backup restore row."
+  },
+  "optBackupImportBtn": {
+    "message": "Import JSON",
+    "description": "Backup import button."
+  },
+  "optBackupImportAria": {
+    "message": "Restore Billable data from a JSON backup file",
+    "description": "aria-label for the backup import button."
+  },
+  "optBackupFileAria": {
+    "message": "Choose a Billable backup file",
+    "description": "aria-label for the hidden backup file input."
+  },
+  "optBackupExported": {
+    "message": "Backup downloaded. Keep it somewhere safe.",
+    "description": "Confirmation after exporting a backup."
+  },
+  "optBackupFail": {
+    "message": "Export failed. Try again.",
+    "description": "Error when the backup export fails."
+  },
+  "optBackupBadJson": {
+    "message": "That file is not valid JSON. Nothing changed.",
+    "description": "Error when the chosen backup file does not parse."
+  },
+  "optBackupInvalid": {
+    "message": "Not a valid Billable backup ($1). Nothing changed.",
+    "description": "Error when a backup file fails validation. $1 = first rejected field names."
+  },
+  "optBackupRestored": {
+    "message": "Backup restored. Clients: $1, entries: $2.",
+    "description": "Confirmation after restoring a backup. $1 = client count, $2 = entry count."
+  },
+  "optBackupNudge": {
+    "message": "Pro backs up every client and entry to one JSON file and restores it anytime · before a laptop swap, or a coffee spill.",
+    "description": "Upgrade nudge text in the backup section."
+  },
+  "optLicenseSub": {
+    "message": "Activate a Pro license key on this device.",
+    "description": "License section subheading on the free tier."
+  },
+  "optLicenseAria": {
+    "message": "Pro license key",
+    "description": "aria-label for the license key input."
+  },
+  "optGetProAria": {
+    "message": "See Billable Pro plans",
+    "description": "Accessible label for the Options header Get Pro button (scrolls to the paywall)."
+  },
+  "optLicenseOffline": {
+    "message": "Activating checks your key with Zovo once. Nothing else about your work leaves this device.",
+    "description": "Fine print under the license form."
+  },
+  "optLicenseNoKey": {
+    "message": "No key yet?",
+    "description": "Lead-in before the Get Billable Pro link under the license form."
+  },
+  "optLicenseGetPro": {
+    "message": "Get Billable Pro",
+    "description": "Button under the license form that opens checkout."
+  },
+  "optLicenseActive": {
+    "message": "License active on this device",
+    "description": "License status line on the Pro tier."
+  },
+  "optLicenseOk": {
+    "message": "Pro is active on this device. Enjoy.",
+    "description": "Confirmation after a license key activates."
+  },
+  "optLicenseOff": {
+    "message": "License deactivated on this device.",
+    "description": "Confirmation after deactivating a license."
+  },
+  "optLicenseBad": {
+    "message": "That key does not check out. Look for typos and try again.",
+    "description": "Error when a license key fails the offline check."
+  },
+  "optPrivacyHeading": {
+    "message": "Privacy",
+    "description": "Privacy section heading."
+  },
+  "optPrivacyBody": {
+    "message": "Billable keeps your clients, entries and settings on this device. They never leave it and nothing about them is sent anywhere. The only network call is license activation.",
+    "description": "Privacy section body."
+  },
+  "optPrivacyFine": {
+    "message": "No account, no sign-up, no sync server. Amounts are stored as integer cents; times as exact milliseconds.",
+    "description": "Privacy section fine print."
+  },
+  "sidebarProEyebrow": {
+    "message": "Billable Pro",
+    "description": "Eyebrow above the paywall heading in the Options sidebar."
+  },
+  "sidebarProHead": {
+    "message": "Earn every hour. Invoice in one click.",
+    "description": "Paywall heading in the Options sidebar."
+  },
+  "sidebarFreeName": {
+    "message": "Free keeps",
+    "description": "Free plan column heading in the paywall."
+  },
+  "freeFeatTimer": {
+    "message": "Unlimited timer, live ticker, badge, and page overlay",
+    "description": "Free plan feature: timer and ticker."
+  },
+  "freeFeatCsv": {
+    "message": "CSV timesheet export",
+    "description": "Free plan feature: CSV export."
+  },
+  "freeFeatClients": {
+    "message": "2 clients",
+    "description": "Free plan feature: client cap."
+  },
+  "sidebarProName": {
+    "message": "Pro adds",
+    "description": "Pro plan column heading in the paywall."
+  },
+  "proFeatClients": {
+    "message": "Unlimited clients",
+    "description": "Pro plan feature: unlimited clients."
+  },
+  "proFeatInvoice": {
+    "message": "Branded PDF invoices",
+    "description": "Pro plan feature: PDF invoices."
+  },
+  "proFeatNotes": {
+    "message": "Notes on any entry",
+    "description": "Pro plan feature: entry notes."
+  },
+  "proFeatRounding": {
+    "message": "6/15-minute rounding rules",
+    "description": "Pro plan feature: billing rounding rules."
+  },
+  "proFeatBackup": {
+    "message": "JSON backup & restore",
+    "description": "Pro plan feature: backup and restore."
+  },
+  "sbPriceMonthlyAmt": {
+    "message": "$$4.99",
+    "description": "Paywall price: Community monthly amount (real, from zovo.one/pricing)."
+  },
+  "sbPriceMonthlyPer": {
+    "message": "a month, cancel anytime",
+    "description": "Paywall price: monthly billing cadence, honest cancel framing."
+  },
+  "sbPriceLifetimeAmt": {
+    "message": "$$99",
+    "description": "Paywall price: Lifetime one-time amount (real, from zovo.one/pricing)."
+  },
+  "sbPriceLifetimePer": {
+    "message": "once, never pay again",
+    "description": "Paywall price: lifetime billing cadence, honest one-payment framing."
+  },
+  "sbPriceReframe": {
+    "message": "Lifetime pays for itself in about 20 months.",
+    "description": "Paywall honest reframe: 99 / 4.99 = 19.8 months, true math, no urgency."
+  },
+  "sidebarCtaAria": {
+    "message": "Get Billable Pro",
+    "description": "aria-label for the paywall call-to-action button."
+  },
+  "proGuarantee": {
+    "message": "14-day money-back guarantee, no questions.",
+    "description": "Guarantee line under the paywall call-to-action."
+  },
+  "sbManageOnce": {
+    "message": "One $$99 payment unlocks Billable Pro forever, not a subscription.",
+    "description": "Lifetime-plan explainer under the paywall call-to-action."
+  },
+  "sbMoreEyebrow": {
+    "message": "More tools",
+    "description": "Sidebar more-tools card eyebrow (neutral zovo.one funnel, no sibling names)."
+  },
+  "sbMoreRow": {
+    "message": "Browse all tools at zovo.one",
+    "description": "Sidebar more-tools row label."
+  },
+  "onbTitle": {
+    "message": "Billable · get paid for every hour",
+    "description": "Onboarding page title."
+  },
+  "onbSkip": {
+    "message": "Skip intro",
+    "description": "Onboarding skip button."
+  },
+  "onbBack": {
+    "message": "Back",
+    "description": "Onboarding back button."
+  },
+  "onbNext": {
+    "message": "Next step",
+    "description": "Onboarding next button."
+  },
+  "onbDone": {
+    "message": "Start billing time",
+    "description": "Onboarding final-step button label."
+  },
+  "onbOfferLater": {
+    "message": "Maybe later",
+    "description": "Onboarding offer-step next button label (declines the Pro offer)."
+  },
+  "onbStepNo": {
+    "message": "$1 of $2",
+    "description": "Onboarding step indicator. $1 = current step, $2 = total steps."
+  },
+  "onbFooterTag": {
+    "message": "An independent extension",
+    "description": "Onboarding footer tagline."
+  },
+  "onbP1Eyebrow": {
+    "message": "The hours that never earn",
+    "description": "Onboarding step 1 eyebrow (problem)."
+  },
+  "onbP1Head": {
+    "message": "Every forgotten hour is money you never earn.",
+    "description": "Onboarding step 1 headline."
+  },
+  "onbP1Lede": {
+    "message": "Freelancers lose real income to forgotten calls, quick fixes, and the ten minutes that became forty. Billable keeps a live money counter on your work, so every minute has a number on it.",
+    "description": "Onboarding step 1 lead paragraph."
+  },
+  "onbP1Body": {
+    "message": "Made for freelancers and consultants who bill by the hour. No account and no sign-up, and your time data never leaves this device.",
+    "description": "Onboarding step 1 supporting paragraph."
+  },
+  "onbP2Eyebrow": {
+    "message": "Try it now",
+    "description": "Onboarding step 2 eyebrow (live demo)."
+  },
+  "onbP2Head": {
+    "message": "Watch what you earn, second by second.",
+    "description": "Onboarding step 2 headline."
+  },
+  "onbP2Lede": {
+    "message": "The demo on this page starts the moment you arrive, ticking at $$85 an hour with the same math the popup uses. Your real timer ticks at your client's rate and keeps counting even if you close the browser.",
+    "description": "Onboarding step 2 lead paragraph (includes a demo hourly rate)."
+  },
+  "onbP2Note": {
+    "message": "Nothing here is saved. The demo is only a taste of the popup.",
+    "description": "Onboarding step 2 reassurance note."
+  },
+  "onbP2DemoClient": {
+    "message": "Acme Inc · $$85/h",
+    "description": "Demo card client line: fictional client and demo hourly rate."
+  },
+  "onbP2DemoStart": {
+    "message": "Start demo",
+    "description": "Demo timer start button."
+  },
+  "onbP2DemoStop": {
+    "message": "Stop demo",
+    "description": "Demo timer stop button."
+  },
+  "onbP2DemoStartAria": {
+    "message": "Start the demo timer",
+    "description": "aria-label for the demo start button."
+  },
+  "onbP2DemoStopAria": {
+    "message": "Stop the demo timer",
+    "description": "aria-label for the demo stop button."
+  },
+  "onbP3Eyebrow": {
+    "message": "Set up once, earn for good",
+    "description": "Onboarding step 3 eyebrow (create first client)."
+  },
+  "onbP3Head": {
+    "message": "Save the client you are billing today.",
+    "description": "Onboarding step 3 headline."
+  },
+  "onbP3Lede": {
+    "message": "A name and an hourly rate. That's the whole setup. This writes a real client, so the popup is ready to bill the moment you open it.",
+    "description": "Onboarding step 3 lead paragraph."
+  },
+  "onbP3Saved": {
+    "message": "Saved. The popup picker shows this client now.",
+    "description": "Onboarding step 3 confirmation after saving the first client."
+  },
+  "onbP3NameLabel": {
+    "message": "Client name",
+    "description": "Label for the onboarding client name field."
+  },
+  "onbP3NamePh": {
+    "message": "Acme Inc",
+    "description": "Placeholder for the onboarding client name field (fictional example company)."
+  },
+  "onbP3RateLabel": {
+    "message": "Hourly rate (US dollars)",
+    "description": "Label for the onboarding hourly rate field."
+  },
+  "onbP3RatePh": {
+    "message": "85",
+    "description": "Placeholder for the onboarding hourly rate field (a number in major currency units)."
+  },
+  "onbP3Save": {
+    "message": "Save my first client",
+    "description": "Onboarding first-client save button."
+  },
+  "onbP3Fine": {
+    "message": "Currency, color, and more clients live in Options. Free includes 2 clients.",
+    "description": "Onboarding step 3 fine print."
+  },
+  "onbP3ErrRateEmpty": {
+    "message": "Enter your hourly rate, like 85 or 85.50.",
+    "description": "Onboarding validation error: rate field left empty."
+  },
+  "onbP3ErrRate": {
+    "message": "The rate must be a number with at most 2 decimals, like 85.50.",
+    "description": "Onboarding validation error: rate invalid."
+  },
+  "onbP3ErrCap": {
+    "message": "Free includes 2 clients. Manage them in Options.",
+    "description": "Onboarding error when the free client cap blocks saving."
+  },
+  "onbP3ErrName": {
+    "message": "Give the client a name (up to 60 characters).",
+    "description": "Onboarding validation error: client name missing or too long."
+  },
+  "onbP3ErrStorage": {
+    "message": "Could not save. Try again.",
+    "description": "Onboarding storage failure while saving the first client."
+  },
+  "onbP4Eyebrow": {
+    "message": "Never an account",
+    "description": "Onboarding step 4 eyebrow (trust)."
+  },
+  "onbP4Head": {
+    "message": "Your timesheet never leaves this device.",
+    "description": "Onboarding step 4 headline."
+  },
+  "onbP4Lede": {
+    "message": "No login, no sync server, no analytics. Clients, entries, and your license live in this browser's storage and nowhere else.",
+    "description": "Onboarding step 4 lead paragraph."
+  },
+  "onbP4Stat1Cap": {
+    "message": "modern, sandboxed, no remote code",
+    "description": "Onboarding step 4 stat caption under the MV3 marker."
+  },
+  "onbP4Stat2Cap": {
+    "message": "open source, MIT licensed",
+    "description": "Onboarding step 4 stat caption under the 100% marker."
+  },
+  "onbP4Stat3": {
+    "message": "Local",
+    "description": "Onboarding step 4 stat marker for offline operation."
+  },
+  "onbP4Stat3Cap": {
+    "message": "your data stays here",
+    "description": "Onboarding step 4 stat caption under the Offline marker."
+  },
+  "onbP4Body": {
+    "message": "One developer builds it in public and answers directly.",
+    "description": "Onboarding step 4 supporting paragraph."
+  },
+  "onbP4LinkWhy": {
+    "message": "Why I build",
+    "description": "Onboarding step 4 link to the maker's motivation page."
+  },
+  "onbP4LinkVision": {
+    "message": "The vision",
+    "description": "Onboarding step 4 link to the vision page."
+  },
+  "onbP4LinkSafe": {
+    "message": "How we keep you safe",
+    "description": "Onboarding step 4 link to the safety page."
+  },
+  "onbP4T1Head": {
+    "message": "This page never sends a thing",
+    "description": "Onboarding step 4 trust row 1 heading."
+  },
+  "onbP4T1Body": {
+    "message": "A timer stores a client, start and end times, and the rate at that moment. Nothing else. Nothing is sent anywhere, ever.",
+    "description": "Onboarding step 4 trust row 1 body."
+  },
+  "onbP4T2Head": {
+    "message": "Get answers from the person who built it",
+    "description": "Onboarding step 4 trust row 2 heading."
+  },
+  "onbP4T2Body": {
+    "message": "Not a faceless company. A developer who ships in public and answers you directly at",
+    "description": "Onboarding step 4 trust row 2 body, followed by the developer's link."
+  },
+  "onbP4T3Head": {
+    "message": "See every line",
+    "description": "Onboarding step 4 trust row 3 heading."
+  },
+  "onbP4T3Body": {
+    "message": "The source is on GitHub under the MIT license. Audit it, fork it, learn from it.",
+    "description": "Onboarding step 4 trust row 3 body."
+  },
+  "onbP5Eyebrow": {
+    "message": "Two ways in",
+    "description": "Onboarding step 5 eyebrow (offer)."
+  },
+  "onbP5Head": {
+    "message": "Free keeps tracking. Pro bills it all.",
+    "description": "Onboarding step 5 headline."
+  },
+  "onbP5Lede": {
+    "message": "The timer, live ticker, page overlay, and CSV export are free for good, for up to 2 clients. Pro removes the cap and turns your entries into invoices.",
+    "description": "Onboarding step 5 lead paragraph."
+  },
+  "onbFreePrice": {
+    "message": "$$0",
+    "description": "Onboarding free plan price."
+  },
+  "onbFreePer": {
+    "message": "forever",
+    "description": "Onboarding free plan price qualifier."
+  },
+  "onbFreeF1": {
+    "message": "Unlimited timer with a live per-second money ticker",
+    "description": "Onboarding free plan feature 1."
+  },
+  "onbFreeF2": {
+    "message": "Pinned page overlay and toolbar badge",
+    "description": "Onboarding free plan feature 2."
+  },
+  "onbFreeF3": {
+    "message": "CSV timesheet export",
+    "description": "Onboarding free plan feature 3."
+  },
+  "onbFreeF4": {
+    "message": "2 clients, kept on this device",
+    "description": "Onboarding free plan feature 4."
+  },
+  "onbBestValue": {
+    "message": "Best value",
+    "description": "Onboarding ribbon on the Pro plan card."
+  },
+  "onbProPrice": {
+    "message": "$$4.99",
+    "description": "Onboarding Pro monthly price."
+  },
+  "onbProPerMonth": {
+    "message": "/month",
+    "description": "Onboarding Pro monthly price qualifier."
+  },
+  "onbProLifetime": {
+    "message": "or $$99 once, never pay again",
+    "description": "Onboarding Pro lifetime alternative under the monthly price."
+  },
+  "onbProReframe": {
+    "message": "Lifetime pays for itself in about 20 months.",
+    "description": "Onboarding offer: honest lifetime-vs-monthly reframe (99 / 4.99 = 19.8)."
+  },
+  "onbProF1": {
+    "message": "Branded PDF invoices, itemized by day",
+    "description": "Onboarding Pro plan feature 1."
+  },
+  "onbProF2": {
+    "message": "Unlimited clients, each with its own rate and currency",
+    "description": "Onboarding Pro plan feature 2."
+  },
+  "onbProF3": {
+    "message": "Notes on any entry",
+    "description": "Onboarding Pro plan feature 3."
+  },
+  "onbProF4": {
+    "message": "6/15-minute rounding rules and an invoice sender line",
+    "description": "Onboarding Pro plan feature 4."
+  },
+  "onbProF5": {
+    "message": "JSON backup & restore",
+    "description": "Onboarding Pro plan feature 5."
+  },
+  "onbProCta": {
+    "message": "Get Billable Pro",
+    "description": "Onboarding Pro call-to-action button."
+  },
+  "onbGuarantee": {
+    "message": "14-day money-back guarantee, no questions asked. Cancel the monthly plan any time.",
+    "description": "Onboarding guarantee line under the Pro call-to-action."
+  },
+  "onbP6Eyebrow": {
+    "message": "You're set",
+    "description": "Onboarding step 6 eyebrow (close)."
+  },
+  "onbP6Head": {
+    "message": "Press Start and watch the number grow",
+    "description": "Onboarding step 6 headline."
+  },
+  "onbP6Lede": {
+    "message": "Pick your client, press Start, and the money ticks. That's the whole thing. Here is where everything lives.",
+    "description": "Onboarding step 6 lead paragraph."
+  },
+  "onbP6SignHead": {
+    "message": "From the maker",
+    "description": "Onboarding step 6 signature block heading."
+  },
+  "onbP6Sign": {
+    "message": "I build Billable on my own, in the open. If something breaks, write to me and I answer. Your $$4.99 or $$99 keeps it independent and ships the next tool.",
+    "description": "Onboarding step 6 maker note (mentions both plan prices)."
+  },
+  "onbP6LinkGh": {
+    "message": "Reach me on GitHub",
+    "description": "Onboarding step 6 link to the developer's GitHub."
+  },
+  "onbP6LinkVision": {
+    "message": "Where this is going",
+    "description": "Onboarding step 6 link to the vision page."
+  },
+  "onbP6C1a": {
+    "message": "Start or stop the timer",
+    "description": "Onboarding cheat sheet row 1: task."
+  },
+  "onbP6C1b": {
+    "message": "the popup",
+    "description": "Onboarding cheat sheet row 1: where."
+  },
+  "onbP6C2a": {
+    "message": "Pin the ticker to a page",
+    "description": "Onboarding cheat sheet row 2: task."
+  },
+  "onbP6C2b": {
+    "message": "popup → Pin overlay",
+    "description": "Onboarding cheat sheet row 2: where (navigation path)."
+  },
+  "onbP6C3a": {
+    "message": "Timesheets and entries",
+    "description": "Onboarding cheat sheet row 3: task."
+  },
+  "onbP6C3b": {
+    "message": "the options page",
+    "description": "Onboarding cheat sheet row 3: where."
+  },
+  "onbP6C4a": {
+    "message": "Invoices, notes, backup",
+    "description": "Onboarding cheat sheet row 4: task."
+  },
+  "onbP6C4b": {
+    "message": "options, with Pro",
+    "description": "Onboarding cheat sheet row 4: where."
+  },
+  "onbP6Pin": {
+    "message": "Pin Billable to the toolbar so the popup is always one click away.",
+    "description": "Onboarding step 6 toolbar-pin tip."
+  },
+  "ovlCloseAria": {
+    "message": "Close overlay",
+    "description": "aria-label for the pinned page overlay's close button."
+  },
+  "ovlIdle": {
+    "message": "No timer running",
+    "description": "Pinned page overlay status when no timer is running."
+  }
+}

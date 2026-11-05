@@ -1,0 +1,237 @@
+/* Billable popup — surface styles on top of bill0d41-base.css.
+   Locked palette (hue 65): primary #d0da62 is LIGHT — on-primary text is the
+   dark olive #33360e (8.3:1), never white. Pro fills are accent #475ed1 with
+   white (5.5:1). Popup width 360px (fleet standard). All classes prefixed
+   bill0d41-. */
+
+.bill0d41-popup {
+  margin: 0;
+  width: 360px;
+  background: var(--bill0d41-surface);
+}
+
+.bill0d41-popup__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bill0d41-space-3);
+  padding: var(--bill0d41-space-4);
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+/* ---- Header ------------------------------------------------------------ */
+.bill0d41-pop-head {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-2);
+  padding: 0 var(--bill0d41-space-1);
+}
+.bill0d41-pop-logo {
+  flex: none;
+  border-radius: 6px;
+}
+.bill0d41-pop-title {
+  margin: 0;
+  font-size: var(--bill0d41-fs-subheading);
+  font-weight: var(--bill0d41-fw-hero);
+  letter-spacing: -0.01em;
+}
+.bill0d41-pop-head .bill0d41-badge {
+  margin-left: auto;
+}
+
+/* ---- Hero ticker (the ONE elevated card) -------------------------------- */
+.bill0d41-pop-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bill0d41-space-3);
+  padding: var(--bill0d41-space-5);
+}
+.bill0d41-pop-hero__status {
+  min-height: 76px;
+}
+.bill0d41-pop-hero__word {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-3);
+  margin: 0;
+  font-size: var(--bill0d41-fs-hero);
+  font-weight: var(--bill0d41-fw-hero);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  /* The hero number renders in text color: the locked primary is too light
+     to carry text on white (would fail AA hard). The dot supplies brand. */
+  color: var(--bill0d41-text);
+  font-variant-numeric: tabular-nums;
+}
+.bill0d41-pop-hero__dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bill0d41-primary-dark);
+}
+.bill0d41-pop-hero__dot[data-state='off'] {
+  background: var(--bill0d41-border-strong);
+}
+.bill0d41-pop-hero__elapsed {
+  margin: 2px 0 0;
+  font-size: 13px;
+}
+.bill0d41-pop-hero__sub {
+  margin: var(--bill0d41-space-1) 0 0;
+  font-size: 13px;
+}
+.bill0d41-pop-hero__toggle {
+  font-size: 15px;
+}
+
+/* ---- Controls card (picker + pin + CSV + totals — free, live) ------------ */
+.bill0d41-pop-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bill0d41-space-3);
+  padding: var(--bill0d41-space-4);
+}
+.bill0d41-pop-picker {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-2);
+}
+.bill0d41-pop-picker__dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bill0d41-primary-dark);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+.bill0d41-pop-picker__select {
+  flex: 1;
+  min-width: 0;
+}
+.bill0d41-pop-actions {
+  display: flex;
+  gap: var(--bill0d41-space-2);
+}
+.bill0d41-pop-actions__btn {
+  flex: 1;
+  min-width: 0;
+}
+.bill0d41-pop-pin-note {
+  margin-top: 0;
+}
+.bill0d41-pop-totals {
+  display: flex;
+  align-items: baseline;
+  gap: var(--bill0d41-space-2);
+  flex-wrap: wrap;
+  margin: 0;
+  padding-top: var(--bill0d41-space-2);
+  border-top: 1px solid var(--bill0d41-border);
+  font-size: 13px;
+  color: var(--bill0d41-text-secondary);
+}
+.bill0d41-pop-totals b {
+  color: var(--bill0d41-text);
+  font-weight: var(--bill0d41-fw-heading);
+}
+.bill0d41-pop-totals__sep {
+  color: var(--bill0d41-border-strong);
+}
+
+/* ---- Empty state (NO-CLIENTS) -------------------------------------------- */
+.bill0d41-pop-empty__text {
+  margin: 0 0 var(--bill0d41-space-4);
+  font-size: 13px;
+}
+
+/* ---- Pro rows (locked but visible; deep-link to Options) ------------------ */
+.bill0d41-pop-pro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bill0d41-space-2);
+  padding: var(--bill0d41-space-4);
+}
+.bill0d41-pop-pro__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bill0d41-pop-pro__rows {
+  display: flex;
+  flex-direction: column;
+}
+.bill0d41-pop-prorow {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-3);
+  min-height: 44px;
+  padding: var(--bill0d41-space-2) var(--bill0d41-space-2);
+  border: 0;
+  border-radius: var(--bill0d41-radius-btn);
+  background: transparent;
+  color: var(--bill0d41-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--bill0d41-transition);
+}
+.bill0d41-pop-prorow:hover {
+  background: var(--bill0d41-pro-50);
+}
+.bill0d41-pop-prorow__lock {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--bill0d41-pro-text);
+}
+.bill0d41-pop-prorow__label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-weight: var(--bill0d41-fw-heading);
+}
+.bill0d41-pop-prorow__hint {
+  font-size: 12px;
+  font-weight: 400;
+}
+.bill0d41-pop-prorow__go {
+  flex: none;
+  color: var(--bill0d41-pro-text);
+}
+.bill0d41-pop-pro__fine {
+  margin: 0;
+  font-size: var(--bill0d41-fs-caption);
+}
+
+/* ---- Pro status card (Pro only) -------------------------------------------- */
+.bill0d41-pop-proactive {
+  padding: var(--bill0d41-space-4);
+}
+.bill0d41-pop-proactive__line {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-2);
+  margin: 0;
+  font-weight: var(--bill0d41-fw-heading);
+}
+.bill0d41-pop-proactive__hint {
+  margin: var(--bill0d41-space-1) 0 0;
+  font-size: 12px;
+}
+
+/* ---- Footer ------------------------------------------------------------------ */
+.bill0d41-pop-foot {
+  padding: var(--bill0d41-space-1) var(--bill0d41-space-1) 0;
+}
+.bill0d41-pop-themeseg .bill0d41-seg__item {
+  min-height: 28px;
+  padding: 0 var(--bill0d41-space-2);
+  font-size: 12px;
+}
+.bill0d41-pop-brand {
+  font-weight: var(--bill0d41-fw-heading);
+}

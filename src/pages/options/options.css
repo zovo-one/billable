@@ -1,0 +1,327 @@
+/* Billable options — surface styles on top of bill0d41-base.css.
+   Locked palette (hue 65): primary #d0da62 is LIGHT — on-primary text is the
+   dark olive #33360e (8.3:1), never white. Pro fills are accent #475ed1 with
+   white (5.5:1). 44px touch targets on every options control. All classes
+   prefixed bill0d41-. */
+
+.bill0d41-options {
+  margin: 0;
+  background: var(--bill0d41-surface);
+  min-height: 100vh;
+}
+
+.bill0d41-opt-layout {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--bill0d41-space-4) var(--bill0d41-space-7);
+}
+
+/* ---- Top nav ------------------------------------------------------------ */
+.bill0d41-opt-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-3);
+  padding: var(--bill0d41-space-4) 0;
+  border-bottom: 1px solid var(--bill0d41-border);
+  margin-bottom: var(--bill0d41-space-6);
+}
+.bill0d41-opt-nav__icon {
+  flex: none;
+  border-radius: 6px;
+}
+.bill0d41-opt-nav__title {
+  font-size: var(--bill0d41-fs-subheading);
+  font-weight: var(--bill0d41-fw-hero);
+  letter-spacing: -0.01em;
+}
+.bill0d41-opt-nav .bill0d41-badge {
+  margin-left: auto;
+}
+.bill0d41-opt-nav__themeseg {
+  margin-left: var(--bill0d41-space-2);
+}
+
+/* ---- Grid ---------------------------------------------------------------- */
+.bill0d41-opt-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--bill0d41-space-6);
+  align-items: start;
+}
+.bill0d41-opt-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bill0d41-space-4);
+  min-width: 0;
+}
+
+/* ---- Sections ------------------------------------------------------------- */
+.bill0d41-opt-section {
+  scroll-margin-top: var(--bill0d41-space-4);
+}
+.bill0d41-opt-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bill0d41-space-3);
+}
+.bill0d41-opt-heading {
+  margin: 0 0 var(--bill0d41-space-3);
+  font-size: var(--bill0d41-fs-subheading);
+  font-weight: var(--bill0d41-fw-hero);
+  letter-spacing: -0.01em;
+}
+.bill0d41-opt-section__head .bill0d41-opt-heading {
+  margin-bottom: 0;
+}
+.bill0d41-opt-sub {
+  margin: var(--bill0d41-space-1) 0 var(--bill0d41-space-4);
+  font-size: 13px;
+}
+.bill0d41-opt-fine {
+  font-size: var(--bill0d41-fs-caption);
+}
+
+/* ---- Rows (44px touch targets) -------------------------------------------- */
+.bill0d41-optrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bill0d41-space-4);
+  min-height: 44px;
+  padding: var(--bill0d41-space-2) 0;
+  border-top: 1px solid var(--bill0d41-border);
+}
+.bill0d41-optrow:first-of-type {
+  border-top: 0;
+}
+.bill0d41-optrow--top {
+  align-items: flex-start;
+}
+.bill0d41-optrow__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-weight: var(--bill0d41-fw-heading);
+}
+.bill0d41-optrow__label .bill0d41-lock {
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.bill0d41-optrow__hint {
+  font-size: 13px;
+  font-weight: 400;
+}
+.bill0d41-optrow__control {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-2);
+  flex: none;
+}
+
+/* 44px touch-target bump for every options control (popup keeps 40px). */
+.bill0d41-options .bill0d41-btn {
+  min-height: 44px;
+}
+.bill0d41-options .bill0d41-btn--sm {
+  min-height: 36px;
+}
+.bill0d41-options .bill0d41-input {
+  min-height: 44px;
+}
+.bill0d41-options .bill0d41-seg__item {
+  min-height: 36px;
+}
+
+/* ---- Forms ----------------------------------------------------------------- */
+.bill0d41-opt-form {
+  margin-top: var(--bill0d41-space-4);
+  padding-top: var(--bill0d41-space-4);
+  border-top: 1px solid var(--bill0d41-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bill0d41-space-3);
+}
+.bill0d41-opt-form__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--bill0d41-space-3);
+}
+.bill0d41-opt-form__grid--entry {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+.bill0d41-opt-field {
+  min-width: 0;
+}
+.bill0d41-opt-field--wide {
+  grid-column: 1 / -1;
+}
+.bill0d41-opt-field .bill0d41-input {
+  width: 100%;
+}
+.bill0d41-opt-field .bill0d41-label .bill0d41-lock {
+  margin-left: var(--bill0d41-space-1);
+  vertical-align: 1px;
+}
+.bill0d41-opt-form__actions {
+  display: flex;
+  gap: var(--bill0d41-space-2);
+  flex-wrap: wrap;
+}
+.bill0d41-opt-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--bill0d41-space-3);
+  margin-bottom: var(--bill0d41-space-4);
+}
+.bill0d41-opt-filters .bill0d41-input {
+  width: 100%;
+}
+
+/* ---- Swatches (client color radiogroup) -------------------------------------- */
+.bill0d41-swatches {
+  display: flex;
+  gap: var(--bill0d41-space-2);
+  flex-wrap: wrap;
+  padding-top: 2px;
+}
+.bill0d41-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: var(--bill0d41-swatch, var(--bill0d41-primary));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  padding: 0;
+}
+.bill0d41-swatch[aria-checked='true'] {
+  border-color: var(--bill0d41-bg);
+  outline: 2px solid var(--bill0d41-text);
+  outline-offset: 1px;
+}
+
+/* ---- Clients list -------------------------------------------------------------- */
+.bill0d41-clients {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.bill0d41-client {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-3);
+  min-height: 44px;
+  padding: var(--bill0d41-space-2) 0;
+  border-bottom: 1px solid var(--bill0d41-border);
+}
+.bill0d41-client:last-child {
+  border-bottom: 0;
+}
+.bill0d41-client__dot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bill0d41-primary-dark);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+.bill0d41-client__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.bill0d41-client__name {
+  font-weight: var(--bill0d41-fw-heading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bill0d41-client__meta {
+  font-size: 12px;
+}
+.bill0d41-client__actions {
+  flex: none;
+  display: flex;
+  gap: var(--bill0d41-space-1);
+}
+
+/* ---- Inline delete confirm ------------------------------------------------------- */
+.bill0d41-opt-confirm {
+  justify-content: space-between;
+  margin-top: var(--bill0d41-space-3);
+}
+.bill0d41-opt-confirm__text {
+  font-size: 13px;
+}
+.bill0d41-opt-confirm__actions {
+  display: flex;
+  gap: var(--bill0d41-space-2);
+  flex: none;
+}
+
+/* ---- Entries table ------------------------------------------------------------------ */
+.bill0d41-opt-tablewrap {
+  overflow-x: auto;
+}
+.bill0d41-entryrow__actions {
+  white-space: nowrap;
+  text-align: right;
+}
+.bill0d41-opt-quota-warn,
+#bill0d41-opt-quota-warn {
+  margin-top: var(--bill0d41-space-3);
+}
+
+/* ---- Inputs -------------------------------------------------------------------------- */
+.bill0d41-input--license {
+  flex: 1;
+  min-width: 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---- Empty state variant -------------------------------------------------------------- */
+.bill0d41-empty--tight {
+  padding: var(--bill0d41-space-4);
+}
+
+/* ---- License form ---------------------------------------------------------------------- */
+.bill0d41-licenseform {
+  display: flex;
+  gap: var(--bill0d41-space-2);
+}
+
+/* ---- Nudge variant: flat (section teaser, no extra top margin) --------------------------- */
+.bill0d41-nudge--flat {
+  margin-top: var(--bill0d41-space-3);
+}
+
+/* ---- Sidebar layout (the rail itself; the canonical engine conversion-sidebar
+   component ported into sidebar.css styles the cards inside) --------------------- */
+.bill0d41-opt-sidebar {
+  position: sticky;
+  top: var(--bill0d41-space-4);
+}
+.bill0d41-opt-nav__getpro {
+  flex: none;
+}
+
+/* ---- Narrow viewports (chrome://extensions embedded view) ----------------------------------- */
+@media (max-width: 900px) {
+  .bill0d41-opt-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bill0d41-opt-sidebar {
+    position: static;
+  }
+  .bill0d41-opt-form__grid,
+  .bill0d41-opt-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

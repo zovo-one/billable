@@ -1,0 +1,573 @@
+/* ============================================================================
+ * bill0d41-base.css — Billable page design system (popup + options + onboarding)
+ * ----------------------------------------------------------------------------
+ * Namespaced port of the engine's shared brand base stylesheet (divergence
+ * identity applied) — the single per-ext TOKEN SOURCE every Billable
+ * extension page imports FIRST; per-surface stylesheets layer on top:
+ *     <link rel="stylesheet" href="../../styles/bill0d41-base.css">
+ *     <link rel="stylesheet" href="popup.css">
+ *
+ * Identity LOCKED (TECHNICAL-BRIEF.md): ns/cssPrefix bill0d41, hue 65.
+ *   primary #d0da62 · primaryDark #c4d039 · primaryLight #dce48b
+ *   primary50 #fafbee · accent #475ed1 · surface #fafbf9 · border #e8e8e3
+ *   root wrapper id #bill0d41-root on every page.
+ *
+ * AA DOCTRINE (identity lock, INVERTED light-primary rule): hue-65 primary
+ * #d0da62 is LIGHT (luminance ~0.64) — text/icons on primary MUST be the dark
+ * olive #33360e (8.3:1 on primary, 7.4:1 on primaryDark, 9.3:1 on primaryLight);
+ * white on primary is ~1.9:1 and FAILS hard. White IS allowed on accent
+ * #475ed1 (5.5:1) and accent-dark #3a4cb8 (7.2:1) — all pro fills use those.
+ * Small "Pro" text/lock chips use the accent itself (5.5:1 on white, 4.9:1 on
+ * the pro-50 tint). Eyebrows/tint icons use the derived olive #61680f
+ * (6.0:1 on white, 5.8:1 on primary50) because primaryDark fails as small
+ * text. Dark-mode page tokens are olive-tinted so the brand hue survives the
+ * flip. Every ratio above verified against the WCAG formula.
+ * ========================================================================== */
+
+/* ---- Design tokens (light) ----------------------------------------------- */
+:root {
+  /* Brand — hue-65 olive, LOCKED (do not re-hue). */
+  --bill0d41-primary:        #d0da62;
+  --bill0d41-primary-dark:   #c4d039;
+  --bill0d41-primary-light:  #dce48b;
+  --bill0d41-primary-50:     #fafbee;   /* tint fill (ghost hover, focus tint)  */
+  --bill0d41-on-primary:     #33360e;   /* AA lock: 8.3:1 on primary — dark, never white */
+  --bill0d41-eyebrow:        #61680f;   /* small bold caps on white/tint: 6.0:1  */
+  --bill0d41-accent:         #475ed1;   /* LOCKED accent — pro fills w/ white: 5.5:1 (AA) */
+  --bill0d41-accent-dark:    #3a4cb8;   /* pro-fill hover: 7.2:1 with white      */
+  --bill0d41-on-accent:      #ffffff;   /* on accent fills only                  */
+  --bill0d41-pro-50:         #edf0fb;   /* indigo tint behind locked rows/nudges */
+  --bill0d41-on-pro-50:      #26307a;   /* 10.3:1 on pro-50 (nudge body, AA)     */
+  --bill0d41-pro-text:       #475ed1;   /* small "Pro" text on white: 5.5:1      */
+
+  /* Surfaces and text */
+  --bill0d41-bg:             #ffffff;
+  --bill0d41-surface:        #fafbf9;   /* palette lock — page/card flush ground */
+  --bill0d41-surface-2:      #eef0ea;   /* nested / hover surface                */
+  --bill0d41-text:           #1c1e10;
+  --bill0d41-text-secondary: #565a44;   /* 7.1:1 on white                        */
+  --bill0d41-badge-free-text:#4b4f3a;   /* 7.4:1 on surface-2 (AA at 11px bold)  */
+  --bill0d41-border:         #e8e8e3;   /* palette lock — hairlines              */
+  --bill0d41-border-strong:  #cfcfc4;   /* switch track, input borders           */
+  --bill0d41-link:           #475ed1;   /* accent doubles as link: 5.5:1 (AA)    */
+
+  /* Status — *-text variants are the AA-safe derivatives for 12–14px text. */
+  --bill0d41-success-text:   #1b7a54;   /* 5.3:1 on white */
+  --bill0d41-error-text:     #c81e1e;   /* 5.7:1 on white */
+
+  /* Typography */
+  --bill0d41-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bill0d41-font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  --bill0d41-fs-caption:    12px;
+  --bill0d41-fs-body:       14px;
+  --bill0d41-fs-subheading: 16px;
+  --bill0d41-fs-heading:    20px;
+  --bill0d41-fs-hero:       40px;   /* the one big thing per screen */
+  --bill0d41-fw-medium:     500;
+  --bill0d41-fw-heading:    600;
+  --bill0d41-fw-hero:       700;
+  --bill0d41-lh:            1.5;
+
+  /* Radii — slightly rounder reads friendlier/premium */
+  --bill0d41-radius-card:   12px;
+  --bill0d41-radius-btn:    8px;
+  --bill0d41-radius-input:  8px;
+  --bill0d41-radius-pill:   9999px;
+
+  /* Shadows — soft, low, single-direction (hero card only), olive-tinted */
+  --bill0d41-shadow-sm: 0 1px 2px rgba(51, 54, 14, 0.06);
+  --bill0d41-shadow: 0 1px 3px rgba(51, 54, 14, 0.07), 0 6px 16px -6px rgba(51, 54, 14, 0.12);
+  --bill0d41-shadow-lg: 0 24px 48px -12px rgba(51, 54, 14, 0.28);
+
+  /* Motion */
+  --bill0d41-transition: 150ms ease-in-out;
+
+  /* 8px grid */
+  --bill0d41-space-1: 4px;  --bill0d41-space-2: 8px;  --bill0d41-space-3: 12px;
+  --bill0d41-space-4: 16px; --bill0d41-space-5: 20px; --bill0d41-space-6: 24px;
+  --bill0d41-space-7: 32px; --bill0d41-space-8: 40px;
+
+  /* Focus ring — accent on the light ground (5.5:1, unmistakable) */
+  --bill0d41-focus: #475ed1;
+}
+
+/* ---- Dark mode ------------------------------------------------------------- */
+/* Pages follow the system by default; a manual page-theme toggle persists a
+ * per-page-origin choice and stamps data-bill0d41-theme="light"|"dark" on
+ * <html>. The media query yields to an explicit manual choice. The two dark
+ * blocks are intentionally identical (no CSS mixin layer in this build).
+ * Primary and pro fills keep their locked color pairs in BOTH modes — the
+ * ratios hold regardless of the page ground, so no fill swap is needed. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-bill0d41-theme='light']) {
+    --bill0d41-primary-50:     #23260f;
+    --bill0d41-eyebrow:        #dce48b;  /* primaryLight: 13.8:1 on the dark ground */
+    --bill0d41-bg:             #12130a;
+    --bill0d41-surface:        #1a1c0f;
+    --bill0d41-surface-2:      #23261a;
+    --bill0d41-text:           #f2f5e0;
+    --bill0d41-text-secondary: #b3b8a0;
+    --bill0d41-badge-free-text:#b3b8a0;
+    --bill0d41-border:         #2e3320;
+    --bill0d41-border-strong:  #3d4226;
+    --bill0d41-link:           #a4b1f2;  /* lifted indigo: 7.6:1 on dark surface   */
+    --bill0d41-pro-50:         #1d2138;
+    --bill0d41-on-pro-50:      #ccd3f7;  /* 10.7:1 on the dark indigo tint */
+    --bill0d41-pro-text:       #a4b1f2;  /* 7.7:1 on dark pro-50 */
+    --bill0d41-success-text:   #7fd4ae;  /* lifted green for the dark ground */
+    --bill0d41-error-text:     #f1998e;  /* 8.0:1 on dark surface */
+    --bill0d41-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --bill0d41-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --bill0d41-shadow-lg: 0 20px 40px -8px rgba(0, 0, 0, 0.6), 0 8px 16px -8px rgba(0, 0, 0, 0.4);
+    --bill0d41-focus: #dce48b;           /* primaryLight on the dark ground */
+  }
+}
+:root[data-bill0d41-theme='dark'] {
+  --bill0d41-primary-50:     #23260f;
+  --bill0d41-eyebrow:        #dce48b;
+  --bill0d41-bg:             #12130a;
+  --bill0d41-surface:        #1a1c0f;
+  --bill0d41-surface-2:      #23261a;
+  --bill0d41-text:           #f2f5e0;
+  --bill0d41-text-secondary: #b3b8a0;
+  --bill0d41-badge-free-text:#b3b8a0;
+  --bill0d41-border:         #2e3320;
+  --bill0d41-border-strong:  #3d4226;
+  --bill0d41-link:           #a4b1f2;
+  --bill0d41-pro-50:         #1d2138;
+  --bill0d41-on-pro-50:      #ccd3f7;
+  --bill0d41-pro-text:       #a4b1f2;
+  --bill0d41-success-text:   #7fd4ae;
+  --bill0d41-error-text:     #f1998e;
+  --bill0d41-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --bill0d41-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --bill0d41-shadow-lg: 0 20px 40px -8px rgba(0, 0, 0, 0.6), 0 8px 16px -8px rgba(0, 0, 0, 0.4);
+  --bill0d41-focus: #dce48b;
+}
+
+/* ---- Base ------------------------------------------------------------------ */
+/* The hidden attribute must always win over component display rules — every
+   state toggle drives [hidden], and a class-level display:flex would
+   otherwise keep "hidden" elements visible. */
+[hidden] {
+  display: none !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--bill0d41-font);
+  font-size: var(--bill0d41-fs-body);
+  line-height: var(--bill0d41-lh);
+  color: var(--bill0d41-text);
+  background: var(--bill0d41-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible focus ring on every interactive element (feeds the a11y gate). */
+:focus-visible {
+  outline: 2px solid var(--bill0d41-focus);
+  outline-offset: 2px;
+  border-radius: var(--bill0d41-radius-btn);
+}
+
+/* ---- Type helpers ---------------------------------------------------------- */
+.bill0d41-caption {
+  margin: 0;
+  font-size: 11px;
+  font-weight: var(--bill0d41-fw-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bill0d41-text-secondary);
+}
+.bill0d41-muted {
+  color: var(--bill0d41-text-secondary);
+}
+.bill0d41-mono {
+  font-family: var(--bill0d41-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.bill0d41-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ---- Cards ------------------------------------------------------------------ */
+.bill0d41-card {
+  background: var(--bill0d41-bg);
+  border: 1px solid var(--bill0d41-border);
+  border-radius: var(--bill0d41-radius-card);
+  padding: var(--bill0d41-space-5);
+}
+.bill0d41-card--hero {
+  /* The ONE elevated surface per screen. */
+  box-shadow: var(--bill0d41-shadow);
+}
+.bill0d41-card--flush {
+  background: var(--bill0d41-surface);
+}
+
+/* ---- Buttons ----------------------------------------------------------------- */
+.bill0d41-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bill0d41-space-2);
+  min-height: 40px;
+  padding: 0 var(--bill0d41-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--bill0d41-radius-btn);
+  font: inherit;
+  font-weight: var(--bill0d41-fw-heading);
+  cursor: pointer;
+  transition: background-color var(--bill0d41-transition),
+              border-color var(--bill0d41-transition),
+              color var(--bill0d41-transition);
+}
+.bill0d41-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.bill0d41-btn--primary {
+  /* AA lock: DARK olive text on the light primary — never white (~1.9:1). */
+  background: var(--bill0d41-primary);
+  color: var(--bill0d41-on-primary);
+}
+.bill0d41-btn--primary:hover:not(:disabled) {
+  background: var(--bill0d41-primary-dark);
+  color: var(--bill0d41-on-primary);
+}
+.bill0d41-btn--pro {
+  /* The single upgrade action per screen. Accent passes with white (5.5:1). */
+  background: var(--bill0d41-accent);
+  color: var(--bill0d41-on-accent);
+}
+.bill0d41-btn--pro:hover:not(:disabled) {
+  background: var(--bill0d41-accent-dark);
+  color: var(--bill0d41-on-accent);
+}
+.bill0d41-btn--secondary {
+  background: var(--bill0d41-bg);
+  border-color: var(--bill0d41-border-strong);
+  color: var(--bill0d41-text);
+}
+.bill0d41-btn--secondary:hover:not(:disabled) {
+  background: var(--bill0d41-surface-2);
+}
+.bill0d41-btn--ghost {
+  background: transparent;
+  color: var(--bill0d41-link);
+}
+.bill0d41-btn--ghost:hover:not(:disabled) {
+  background: var(--bill0d41-primary-50);
+}
+.bill0d41-btn--sm {
+  min-height: 32px;
+  padding: 0 var(--bill0d41-space-3);
+  font-size: 13px;
+}
+.bill0d41-btn--block {
+  width: 100%;
+}
+
+/* ---- Switch (toggles) ---------------------------------------------------------
+ * Real <input type="checkbox" role="switch"> + aria-label (the a11y gate does
+ * not read data-* as a name source). The visible track is aria-hidden. */
+.bill0d41-switch {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  width: 44px;
+  height: 24px;
+}
+.bill0d41-switch__input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.bill0d41-switch__input:disabled {
+  cursor: not-allowed;
+}
+.bill0d41-switch__track {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--bill0d41-radius-pill);
+  background: var(--bill0d41-border-strong);
+  transition: background-color var(--bill0d41-transition);
+  pointer-events: none;
+}
+.bill0d41-switch__track::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: var(--bill0d41-shadow-sm);
+  transition: transform var(--bill0d41-transition),
+              background-color var(--bill0d41-transition);
+}
+.bill0d41-switch__input:checked + .bill0d41-switch__track {
+  background: var(--bill0d41-primary);
+}
+.bill0d41-switch__input:checked + .bill0d41-switch__track::before {
+  transform: translateX(20px);
+  background: var(--bill0d41-on-primary); /* dark knob on the light primary */
+}
+.bill0d41-switch__input:focus-visible + .bill0d41-switch__track {
+  outline: 2px solid var(--bill0d41-focus);
+  outline-offset: 2px;
+}
+
+/* ---- Badges + lock chips ------------------------------------------------------ */
+.bill0d41-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--bill0d41-radius-pill);
+  font-size: 11px;
+  font-weight: var(--bill0d41-fw-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.bill0d41-badge--free {
+  background: var(--bill0d41-surface-2);
+  color: var(--bill0d41-badge-free-text);
+}
+.bill0d41-badge--pro {
+  background: var(--bill0d41-accent);
+  color: var(--bill0d41-on-accent);
+}
+
+/* Lock chip on Pro-locked controls — color + visible text (never color alone). */
+.bill0d41-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bill0d41-space-1);
+  padding: 2px 8px;
+  border-radius: var(--bill0d41-radius-pill);
+  background: var(--bill0d41-pro-50);
+  color: var(--bill0d41-pro-text);
+  font-size: 11px;
+  font-weight: var(--bill0d41-fw-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.bill0d41-lock svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---- Locked rows (show-don't-hide Pro gating) --------------------------------- */
+.bill0d41-locked .bill0d41-input,
+.bill0d41-locked .bill0d41-seg,
+.bill0d41-locked .bill0d41-btn {
+  opacity: 0.65;
+}
+
+/* Locked Pro controls use aria-disabled, never the disabled attribute — a
+   disabled control swallows the cap-hit click (no nudge), while aria-disabled
+   keeps the click (gateRow → nudge) and the focus. Handlers tier-guard every
+   action; this rule only supplies the dimmed look. */
+.bill0d41-btn[aria-disabled='true'],
+.bill0d41-input[aria-disabled='true'],
+.bill0d41-switch__input[aria-disabled='true'],
+.bill0d41-seg__item[aria-disabled='true'] {
+  opacity: 0.65;
+}
+.bill0d41-btn[aria-disabled='true'],
+.bill0d41-switch[aria-disabled='true'],
+.bill0d41-switch__input[aria-disabled='true'] {
+  cursor: default;
+}
+
+/* ---- Inline nudge (the cap-hit ask: note + Upgrade + Maybe later) ------------- */
+.bill0d41-nudge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bill0d41-space-3);
+  margin-top: var(--bill0d41-space-4);
+  padding: var(--bill0d41-space-4);
+  background: var(--bill0d41-pro-50);
+  border: 1px solid var(--bill0d41-border);
+  border-radius: var(--bill0d41-radius-card);
+}
+.bill0d41-nudge__text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--bill0d41-on-pro-50);
+}
+.bill0d41-nudge__actions {
+  display: flex;
+  gap: var(--bill0d41-space-2);
+  flex-wrap: wrap;
+}
+
+/* ---- Inputs --------------------------------------------------------------------- */
+.bill0d41-input {
+  min-height: 40px;
+  padding: 0 var(--bill0d41-space-3);
+  border: 1px solid var(--bill0d41-border-strong);
+  border-radius: var(--bill0d41-radius-input);
+  background: var(--bill0d41-bg);
+  color: var(--bill0d41-text);
+  font: inherit;
+}
+.bill0d41-input::placeholder {
+  color: var(--bill0d41-text-secondary);
+}
+.bill0d41-input[aria-invalid='true'] {
+  border-color: var(--bill0d41-error-text);
+}
+select.bill0d41-input {
+  padding-right: var(--bill0d41-space-6);
+}
+textarea.bill0d41-input {
+  min-height: 72px;
+  padding: var(--bill0d41-space-2) var(--bill0d41-space-3);
+  resize: vertical;
+}
+.bill0d41-label {
+  display: block;
+  font-size: var(--bill0d41-fs-caption);
+  font-weight: var(--bill0d41-fw-medium);
+  color: var(--bill0d41-text-secondary);
+  margin-bottom: var(--bill0d41-space-1);
+}
+
+/* ---- Segmented control (radiogroup) ----------------------------------------------
+ * role="radiogroup" + role="radio" buttons with aria-checked on EVERY button
+ * (the a11y gate flags a radiogroup where only the active one carries it). */
+.bill0d41-seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bill0d41-surface-2);
+  border-radius: 10px;
+}
+.bill0d41-seg__item {
+  min-height: 32px;
+  padding: 0 var(--bill0d41-space-3);
+  border: 0;
+  border-radius: var(--bill0d41-radius-btn);
+  background: transparent;
+  color: var(--bill0d41-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: var(--bill0d41-fw-heading);
+  cursor: pointer;
+}
+.bill0d41-seg__item[aria-checked='true'] {
+  background: var(--bill0d41-bg);
+  color: var(--bill0d41-text);
+  box-shadow: var(--bill0d41-shadow-sm);
+}
+.bill0d41-seg__item:disabled {
+  cursor: not-allowed;
+}
+
+/* ---- Empty state -------------------------------------------------------------------- */
+.bill0d41-empty {
+  padding: var(--bill0d41-space-6);
+  text-align: center;
+  color: var(--bill0d41-text-secondary);
+}
+.bill0d41-empty__head {
+  margin: 0 0 var(--bill0d41-space-1);
+  font-size: var(--bill0d41-fs-subheading);
+  font-weight: var(--bill0d41-fw-heading);
+  color: var(--bill0d41-text);
+}
+
+/* ---- Data table -------------------------------------------------------------------- */
+.bill0d41-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.bill0d41-table th {
+  padding: var(--bill0d41-space-2);
+  text-align: left;
+  font-size: 11px;
+  font-weight: var(--bill0d41-fw-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bill0d41-text-secondary);
+  border-bottom: 1px solid var(--bill0d41-border);
+}
+.bill0d41-table td {
+  padding: var(--bill0d41-space-2);
+  border-bottom: 1px solid var(--bill0d41-border);
+  font-variant-numeric: tabular-nums;
+}
+.bill0d41-table tr:last-child td {
+  border-bottom: 0;
+}
+
+/* ---- Links + footer --------------------------------------------------------------------- */
+.bill0d41-link {
+  color: var(--bill0d41-link);
+  text-decoration: none;
+}
+.bill0d41-link:hover {
+  text-decoration: underline;
+}
+.bill0d41-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bill0d41-space-3);
+  padding: var(--bill0d41-space-3) 0 0;
+  font-size: var(--bill0d41-fs-caption);
+}
+.bill0d41-foot__links {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-3);
+}
+
+/* ---- Inline message states (license, save, backup, entries) ------------------------------ */
+.bill0d41-msg {
+  margin: var(--bill0d41-space-2) 0 0;
+  min-height: 20px;
+  font-size: 13px;
+}
+.bill0d41-msg[data-state='ok'] {
+  color: var(--bill0d41-success-text);
+}
+.bill0d41-msg[data-state='err'] {
+  color: var(--bill0d41-error-text);
+}
+
+/* ---- Inline alert (loss-framing, used once, honestly) -------------------------------------- */
+.bill0d41-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--bill0d41-space-2);
+  padding: 10px 12px;
+  border-radius: var(--bill0d41-radius-btn);
+  font-size: var(--bill0d41-fs-body);
+}
+.bill0d41-alert--warn {
+  color: var(--bill0d41-error-text);
+  background: color-mix(in srgb, var(--bill0d41-error-text) 8%, var(--bill0d41-bg));
+  border: 1px solid color-mix(in srgb, var(--bill0d41-error-text) 22%, transparent);
+}
+
+/* ---- Reduced motion ------------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

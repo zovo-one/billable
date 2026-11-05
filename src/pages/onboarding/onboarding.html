@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<!--
+  onboarding.html - Billable premium onboarding (6 steps, ZERO optional
+  permissions, so the template's permission/grant step AND its wiring are
+  removed per fleet trap #4; this ext requests storage/alarms/activeTab/
+  scripting only, all declared up front).
+
+  Flow: problem, live-demo instant win (a real ticking money counter at a
+  demo rate - not a recording), investment (create the first REAL client,
+  written to storage so the popup works the moment it opens), trust, honest
+  offer (Free vs Pro), close.
+  Chrome 150 broke HTML message-name substitution, so this page ships
+  LITERAL English + data-i18n attributes ONLY; onboarding.js localizes on
+  DOMContentLoaded (same sweep pattern as popup.ts).
+  MV3 CSP forbids inline scripts, so the controller is external
+  onboarding.js ONLY.
+  The Pro CTA carries NO href: checkoutUrl('onboarding') builds the URL at
+  runtime so the literal utm_content never ships in markup (BoxGrow rule).
+
+  Element-id contract for onboarding.ts (BUILDER):
+    chrome: #bill0d41-onb-rail (dots injected, class bill0d41-onb-dot with
+            .done/.now) · #bill0d41-onb-skip · #bill0d41-onb-back ·
+            #bill0d41-onb-next · #bill0d41-onb-stepno · steps are
+            .bill0d41-onb-step[data-step="0..5"], visible = .on
+    close:  verbatim - chrome.tabs.getCurrent + tabs.remove, window.close()
+            fallback inside try/catch (gate 17); opened on install only.
+    demo:   #bill0d41-onb-demo-amount · #bill0d41-onb-demo-elapsed ·
+            #bill0d41-onb-demo-toggle (aria-live stays "off" - a ticking
+            counter must not announce every second)
+    invest: #bill0d41-onb-client-name (maxlength 60) ·
+            #bill0d41-onb-client-rate (major units) ·
+            #bill0d41-onb-client-save · #bill0d41-onb-client-msg ·
+            #bill0d41-onb-saved (.show reveals)
+    offer:  #bill0d41-onb-pro-cta (button, NO href)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="onbTitle">Billable · get paid for every hour</title>
+  <link rel="stylesheet" href="../../styles/bill0d41-base.css">
+  <link rel="stylesheet" href="onboarding.css">
+</head>
+<body class="bill0d41-onb">
+<div class="bill0d41-onb-wrap" id="bill0d41-root">
+  <div class="bill0d41-onb-top">
+    <div class="bill0d41-onb-mark" aria-hidden="true">B</div>
+    <div class="bill0d41-onb-brand">Billable <span>&middot; by Zovo</span></div>
+    <div class="bill0d41-onb-rail" id="bill0d41-onb-rail" aria-hidden="true"></div>
+    <button class="bill0d41-onb-skip" id="bill0d41-onb-skip" type="button" data-i18n="onbSkip">Skip intro</button>
+  </div>
+
+  <div class="bill0d41-onb-stage">
+    <!-- 1 · PROBLEM -->
+    <section class="bill0d41-onb-step on" data-step="0">
+      <div class="bill0d41-onb-grid">
+        <div>
+          <div class="bill0d41-onb-eyebrow" data-i18n="onbP1Eyebrow">The hours that never earn</div>
+          <h1 data-i18n="onbP1Head">Every forgotten hour is money you never earn.</h1>
+          <p class="bill0d41-onb-lede wide" data-i18n="onbP1Lede">Freelancers lose real income to forgotten calls, quick fixes, and the ten minutes that became forty. Billable keeps a live money counter on your work, so every minute has a number on it.</p>
+          <p class="bill0d41-onb-pt" data-i18n="onbP1Body">Made for freelancers and consultants who bill by the hour. No account and no sign-up, and your time data never leaves this device.</p>
+        </div>
+        <div class="bill0d41-onb-visual" aria-hidden="true">
+          <div class="bill0d41-onb-mockhd"><i></i><i></i><i></i></div>
+          <div class="bill0d41-onb-mockrow">
+            <span class="bill0d41-onb-mocklabel">Tuesday · Acme Inc</span>
+            <span class="bill0d41-onb-mockval bill0d41-mono">2h 14m · $189.00</span>
+          </div>
+          <div class="bill0d41-onb-mockrow">
+            <span class="bill0d41-onb-mocklabel">Tuesday · Bluebird Co</span>
+            <span class="bill0d41-onb-mockval bill0d41-mono">47m · $62.50</span>
+          </div>
+          <div class="bill0d41-onb-mockrow dim">
+            <span class="bill0d41-onb-mocklabel">Forgotten gap</span>
+            <span class="bill0d41-onb-mockval bill0d41-mono">??:?? · $?.??</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · INSTANT WIN (live demo: a real ticking money counter) -->
+    <section class="bill0d41-onb-step" data-step="1">
+      <div class="bill0d41-onb-grid">
+        <div>
+          <div class="bill0d41-onb-eyebrow" data-i18n="onbP2Eyebrow">Try it now</div>
+          <h1 data-i18n="onbP2Head">Watch what you earn, second by second.</h1>
+          <p class="bill0d41-onb-lede wide" data-i18n="onbP2Lede">The demo on this page starts the moment you arrive, ticking at $85 an hour with the same math the popup uses. Your real timer ticks at your client's rate and keeps counting even if you close the browser.</p>
+          <p class="bill0d41-onb-pt" data-i18n="onbP2Note">Nothing here is saved. The demo is only a taste of the popup.</p>
+        </div>
+        <div class="bill0d41-onb-visual">
+          <div class="bill0d41-onb-demo">
+            <div class="bill0d41-onb-democlient">
+              <span class="bill0d41-onb-demodot" aria-hidden="true"></span>
+              <span data-i18n="onbP2DemoClient">Acme Inc · $85/h</span>
+            </div>
+            <div class="bill0d41-onb-demoamount" role="status" aria-live="off">
+              <span class="bill0d41-mono" id="bill0d41-onb-demo-amount">$0.00</span>
+            </div>
+            <p class="bill0d41-onb-demoelapsed bill0d41-mono" id="bill0d41-onb-demo-elapsed">0:00:00</p>
+            <button type="button" class="bill0d41-btn bill0d41-btn--primary bill0d41-btn--block"
+                    id="bill0d41-onb-demo-toggle"
+                    aria-label="Start the demo timer" data-i18n-attr="aria-label:onbP2DemoStartAria"><span data-i18n="onbP2DemoStart">Start demo</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · INVESTMENT (create the first REAL client) -->
+    <section class="bill0d41-onb-step" data-step="2">
+      <div class="bill0d41-onb-grid">
+        <div>
+          <div class="bill0d41-onb-eyebrow" data-i18n="onbP3Eyebrow">Set up once, earn for good</div>
+          <h1 data-i18n="onbP3Head">Save the client you are billing today.</h1>
+          <p class="bill0d41-onb-lede wide" data-i18n="onbP3Lede">A name and an hourly rate. That's the whole setup. This writes a real client, so the popup is ready to bill the moment you open it.</p>
+          <div class="bill0d41-onb-saved" id="bill0d41-onb-saved">
+            <span class="bill0d41-onb-chk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg></span>
+            <span data-i18n="onbP3Saved">Saved. The popup picker shows this client now.</span>
+          </div>
+        </div>
+        <div class="bill0d41-onb-visual">
+          <form class="bill0d41-onb-pform" id="bill0d41-onb-client-form" novalidate>
+            <label class="bill0d41-label" for="bill0d41-onb-client-name" data-i18n="onbP3NameLabel">Client name</label>
+            <input class="bill0d41-input bill0d41-onb-in" id="bill0d41-onb-client-name" type="text"
+                   maxlength="60" autocomplete="off" placeholder="Acme Inc"
+                   data-i18n-attr="placeholder:onbP3NamePh">
+            <label class="bill0d41-label" for="bill0d41-onb-client-rate" data-i18n="onbP3RateLabel">Hourly rate (US dollars)</label>
+            <input class="bill0d41-input bill0d41-onb-in bill0d41-mono" id="bill0d41-onb-client-rate" type="text"
+                   inputmode="decimal" autocomplete="off" placeholder="85"
+                   aria-describedby="bill0d41-onb-client-msg"
+                   data-i18n-attr="placeholder:onbP3RatePh">
+            <button class="bill0d41-btn bill0d41-btn--primary bill0d41-btn--block" id="bill0d41-onb-client-save" type="submit" data-i18n="onbP3Save">Save my first client</button>
+            <p class="bill0d41-msg" id="bill0d41-onb-client-msg" role="status" aria-live="polite"></p>
+            <p class="bill0d41-onb-pform__fine bill0d41-muted" data-i18n="onbP3Fine">Currency, color, and more clients live in Options. Free includes 2 clients.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · TRUST -->
+    <section class="bill0d41-onb-step" data-step="3">
+      <div class="bill0d41-onb-grid">
+        <div>
+          <div class="bill0d41-onb-eyebrow" data-i18n="onbP4Eyebrow">Never an account</div>
+          <h1 data-i18n="onbP4Head">Your timesheet never leaves this device.</h1>
+          <p class="bill0d41-onb-lede wide" data-i18n="onbP4Lede">No login, no sync server, no analytics. Clients, entries, and your license live in this browser's storage and nowhere else.</p>
+          <div class="bill0d41-onb-stats">
+            <div><span class="bill0d41-onb-statnum">MV3</span><span class="bill0d41-onb-statcap" data-i18n="onbP4Stat1Cap">modern, sandboxed, no remote code</span></div>
+            <div><span class="bill0d41-onb-statnum">100%</span><span class="bill0d41-onb-statcap" data-i18n="onbP4Stat2Cap">open source, MIT licensed</span></div>
+            <div><span class="bill0d41-onb-statnum" data-i18n="onbP4Stat3">Offline</span><span class="bill0d41-onb-statcap" data-i18n="onbP4Stat3Cap">works fully offline</span></div>
+          </div>
+          <p class="bill0d41-onb-pt" data-i18n="onbP4Body">One developer builds it in public and answers directly.</p>
+          <div class="bill0d41-onb-morelinks">
+            <a href="https://zovo.one/why?ref=billable" target="_blank" rel="noopener" data-i18n="onbP4LinkWhy">Why I build</a>
+            <a href="https://zovo.one/vision?ref=billable" target="_blank" rel="noopener" data-i18n="onbP4LinkVision">The vision</a>
+            <a href="https://zovo.one/how-we-keep-you-safe?ref=billable" target="_blank" rel="noopener" data-i18n="onbP4LinkSafe">How we keep you safe</a>
+          </div>
+        </div>
+        <div class="bill0d41-onb-visual">
+          <div class="bill0d41-onb-trust">
+            <div class="bill0d41-onb-trow">
+              <div class="bill0d41-onb-tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+              <div>
+                <h4 data-i18n="onbP4T1Head">This page never sends a thing</h4>
+                <p data-i18n="onbP4T1Body">A timer stores a client, start and end times, and the rate at that moment. Nothing else. Nothing is sent anywhere, ever.</p>
+              </div>
+            </div>
+            <div class="bill0d41-onb-trow">
+              <div class="bill0d41-onb-tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+              <div>
+                <h4 data-i18n="onbP4T2Head">Get answers from the person who built it</h4>
+                <p><span data-i18n="onbP4T2Body">Not a faceless company. A developer who ships in public and answers you directly at</span> <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">github.com/theluckystrike</a>.</p>
+              </div>
+            </div>
+            <div class="bill0d41-onb-trow">
+              <div class="bill0d41-onb-tico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l-4 3 4 3"/><path d="M16 9l4 3-4 3"/><path d="M13 6l-2 12"/></svg></div>
+              <div>
+                <h4 data-i18n="onbP4T3Head">See every line</h4>
+                <p data-i18n="onbP4T3Body">The source is on GitHub under the MIT license. Audit it, fork it, learn from it.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · OFFER -->
+    <section class="bill0d41-onb-step" data-step="4">
+      <div class="bill0d41-onb-offerhead">
+        <div class="bill0d41-onb-eyebrow" data-i18n="onbP5Eyebrow">Two ways in</div>
+        <h1 data-i18n="onbP5Head">Free keeps tracking. Pro bills it all.</h1>
+        <p class="bill0d41-onb-lede wide" data-i18n="onbP5Lede">The timer, live ticker, page overlay, and CSV export are free for good, for up to 2 clients. Pro removes the cap and turns your entries into invoices.</p>
+      </div>
+      <div class="bill0d41-onb-plans">
+        <div class="bill0d41-onb-plan" data-plan="free">
+          <div class="bill0d41-onb-pn" data-i18n="badgeFree">Free</div>
+          <div class="bill0d41-onb-price"><span data-i18n="onbFreePrice">$0</span> <small data-i18n="onbFreePer">forever</small></div>
+          <ul>
+            <li data-i18n="onbFreeF1">Unlimited timer with a live per-second money ticker</li>
+            <li data-i18n="onbFreeF2">Pinned page overlay and toolbar badge</li>
+            <li data-i18n="onbFreeF3">CSV timesheet export</li>
+            <li data-i18n="onbFreeF4">2 clients, kept on this device</li>
+          </ul>
+        </div>
+        <div class="bill0d41-onb-plan hero" data-plan="pro">
+          <div class="bill0d41-onb-ribbon" data-i18n="onbBestValue">Best value</div>
+          <div class="bill0d41-onb-pn pro" data-i18n="badgePro">Pro</div>
+          <div class="bill0d41-onb-price"><span data-i18n="onbProPrice">$4.99</span> <small data-i18n="onbProPerMonth">/month</small></div>
+          <div class="bill0d41-onb-proalt" data-i18n="onbProLifetime">or $99 once, never pay again</div>
+          <p class="bill0d41-onb-proalt bill0d41-onb-proalt--reframe" data-i18n="onbProReframe">Lifetime pays for itself in about 20 months.</p>
+          <ul>
+            <li data-i18n="onbProF1">Unlimited clients, each with its own rate and currency</li>
+            <li data-i18n="onbProF2">Branded PDF invoices, itemized by day</li>
+            <li data-i18n="onbProF3">Notes on any entry</li>
+            <li data-i18n="onbProF4">6/15-minute rounding rules and an invoice sender line</li>
+            <li data-i18n="onbProF5">JSON backup &amp; restore</li>
+          </ul>
+          <button class="bill0d41-btn bill0d41-btn--pro bill0d41-btn--block bill0d41-onb-cta" id="bill0d41-onb-pro-cta" type="button" data-i18n="onbProCta">Get Billable Pro</button>
+          <p class="bill0d41-onb-guar" data-i18n="onbGuarantee">14-day money-back guarantee, no questions asked. Cancel the monthly plan any time.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · CLOSE -->
+    <section class="bill0d41-onb-step" data-step="5">
+      <div class="bill0d41-onb-grid">
+        <div>
+          <div class="bill0d41-onb-eyebrow" data-i18n="onbP6Eyebrow">You're set</div>
+          <h1 data-i18n="onbP6Head">Press Start and watch the number grow</h1>
+          <p class="bill0d41-onb-lede wide" data-i18n="onbP6Lede">Pick your client, press Start, and the money ticks. That's the whole thing. Here is where everything lives.</p>
+          <div class="bill0d41-onb-sign">
+            <h4 data-i18n="onbP6SignHead">From the maker</h4>
+            <span data-i18n="onbP6Sign">I build Billable on my own, in the open. If something breaks, write to me and I answer. Your $4.99 or $99 keeps it independent and ships the next tool.</span>
+            <div class="bill0d41-onb-morelinks">
+              <a href="https://github.com/theluckystrike" target="_blank" rel="noopener" data-i18n="onbP6LinkGh">Reach me on GitHub</a>
+              <a href="https://zovo.one/vision?ref=billable" target="_blank" rel="noopener" data-i18n="onbP6LinkVision">Where this is going</a>
+            </div>
+          </div>
+        </div>
+        <div class="bill0d41-onb-visual">
+          <div class="bill0d41-onb-cheat">
+            <div class="row"><span data-i18n="onbP6C1a">Start or stop the timer</span><span class="bill0d41-onb-how" data-i18n="onbP6C1b">the popup</span></div>
+            <div class="row"><span data-i18n="onbP6C2a">Pin the ticker to a page</span><span class="bill0d41-onb-how" data-i18n="onbP6C2b">popup → Pin overlay</span></div>
+            <div class="row"><span data-i18n="onbP6C3a">Timesheets and entries</span><span class="bill0d41-onb-how" data-i18n="onbP6C3b">the options page</span></div>
+            <div class="row"><span data-i18n="onbP6C4a">Invoices, notes, backup</span><span class="bill0d41-onb-how" data-i18n="onbP6C4b">options, with Pro</span></div>
+          </div>
+          <p class="bill0d41-onb-pt pin" data-i18n="onbP6Pin">Pin Billable to the toolbar so the popup is always one click away.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bill0d41-onb-nav">
+    <button class="bill0d41-btn bill0d41-btn--secondary bill0d41-onb-btn" id="bill0d41-onb-back" type="button" style="visibility:hidden" data-i18n="onbBack">Back</button>
+    <span class="bill0d41-onb-stepno" id="bill0d41-onb-stepno">1 of 6</span>
+    <span class="bill0d41-onb-spacer"></span>
+    <button class="bill0d41-btn bill0d41-btn--primary bill0d41-onb-btn" id="bill0d41-onb-next" type="button" data-i18n="onbNext">Next step</button>
+  </div>
+
+  <footer class="bill0d41-foot bill0d41-onb-foot">
+    <span class="bill0d41-muted" data-i18n="onbFooterTag">An independent extension</span>
+    <span class="bill0d41-foot__links">
+      <a class="bill0d41-link" href="https://zovo.one/support" target="_blank" rel="noreferrer noopener" data-i18n="footerHelp">Help</a>
+      <a class="bill0d41-link bill0d41-onb-brandlink" href="https://zovo.one" target="_blank" rel="noreferrer noopener">zovo.one</a>
+    </span>
+  </footer>
+</div>
+
+<script src="onboarding.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--
+  popup.html — Billable toolbar popup (SURFACE-owned).
+
+  Contents (TECHNICAL-BRIEF.md §2/§4/§6): brand header + tier badge; hero
+  live money ticker (THE one hero: per-second earnings + elapsed for the
+  running client, idle = today's total across clients); client picker with
+  color dot; Start/Stop (flips by state); "Pin overlay to this page" (the
+  ONLY chrome.scripting.executeScript path in the product, gated on this
+  click) + typed failure note; CSV export (free); today/week totals (REAL,
+  derived from local entries only); locked-visible Pro rows (PDF invoice,
+  entry notes, backup) that DEEP-LINK to Options — paywall variant 2: NO
+  paywall/upsell UI and NO checkout link in the popup, the popup's only
+  funnel surface is the Options page; empty state (no clients) with an
+  add-first-client deep-link; footer (Options, page theme, visible
+  "zovo.one" text anchor).
+
+  Element-id contract for popup.ts (BUILDER) — all ids are bill0d41-pop-*:
+    #bill0d41-pop-tier          tier badge (hidden on free, "Pro" on pro)
+    #bill0d41-pop-hero          hero card (data-state: 'idle'|'running')
+    #bill0d41-pop-earnings      big money number (textContent, Intl-formatted)
+    #bill0d41-pop-elapsed       running elapsed H:MM:SS (muted mono line)
+    #bill0d41-pop-hero-caption  hero eyebrow ("Now earning" / "Today")
+    #bill0d41-pop-hero-sub      context line (running client / idle hint)
+    #bill0d41-pop-dot           running dot (data-state 'on'|'off')
+    #bill0d41-pop-toggle        Start/Stop button (label + aria flip)
+    #bill0d41-pop-controls      controls card (hidden when NO-CLIENTS)
+    #bill0d41-pop-client-dot    picker color dot (style.backgroundColor)
+    #bill0d41-pop-client-select client <select> (options = real clients)
+    #bill0d41-pop-pin           pin-overlay button (the executeScript click)
+    #bill0d41-pop-pin-note      typed note, e.g. "Overlay not available on
+                                this page" (role=status, hidden until used)
+    #bill0d41-pop-csv           CSV quick-export button (free)
+    #bill0d41-pop-today         today total (textContent)
+    #bill0d41-pop-week          week total (textContent)
+    #bill0d41-pop-empty         empty state card (NO-CLIENTS)
+    #bill0d41-pop-empty-add     "Add your first client" → openOptionsPage
+    #bill0d41-pop-pro           locked Pro rows card (hidden when pro)
+    #bill0d41-pop-pro-invoice / -notes / -backup
+                                Pro rows (buttons; click → openOptionsPage)
+    #bill0d41-pop-pro-active    "Pro active" flush card (hidden when free)
+    #bill0d41-pop-options-btn   footer Options button
+    #bill0d41-pop-theme-seg     page-theme radiogroup (data-page-theme)
+
+  Chrome 150 broke HTML message-name substitution → LITERAL English +
+  data-i18n attributes ONLY; the controller localizes on DOMContentLoaded.
+  MV3 CSP forbids inline scripts → external popup.js ONLY.
+  No upgrade/checkout URL appears here (variant 2 + BoxGrow rule); Pro rows
+  deep-link to the Options page via chrome.runtime.openOptionsPage.
+
+  OVERLAY CSS CONTRACT (BUILDER ports src/overlay/overlay.css into
+  overlay-styles.ts OVERLAY_CSS verbatim): the injected card lives in ONE
+  host <div id="bill0d41-host"> (closed shadow root) and uses ONLY
+  .bill0d41-* classes — see the class list in src/overlay/overlay.css and
+  keep page-DOM footprint to the single host node (gate 15).
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="popTitle">Billable</title>
+  <link rel="stylesheet" href="../../styles/bill0d41-base.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="bill0d41-popup">
+  <main class="bill0d41-popup__body" id="bill0d41-root">
+
+    <header class="bill0d41-pop-head">
+      <img class="bill0d41-pop-logo" src="../../../icons/32.png" alt="" width="24" height="24">
+      <h1 class="bill0d41-pop-title" data-i18n="popTitle">Billable</h1>
+      <span class="bill0d41-badge bill0d41-badge--pro" id="bill0d41-pop-tier" hidden data-i18n="badgePro">Pro</span>
+    </header>
+
+    <!-- Hero: the live money ticker. The ONE hero on this screen. Running:
+         per-second earnings + elapsed for the running client, recomputed from
+         persisted timestamps (never an in-memory counter). Idle: today's
+         total across clients. role=status + aria-live="off" by law — a
+         ticking counter must not announce every second. -->
+    <section class="bill0d41-card bill0d41-card--hero bill0d41-pop-hero" id="bill0d41-pop-hero"
+             data-state="idle" aria-labelledby="bill0d41-pop-hero-caption">
+      <p class="bill0d41-caption" id="bill0d41-pop-hero-caption" data-i18n="popHeroToday">Today</p>
+      <div class="bill0d41-pop-hero__status" role="status" aria-live="off">
+        <p class="bill0d41-pop-hero__word">
+          <span class="bill0d41-pop-hero__dot" id="bill0d41-pop-dot" data-state="off" aria-hidden="true"></span>
+          <span class="bill0d41-mono" id="bill0d41-pop-earnings">$0.00</span>
+        </p>
+        <p class="bill0d41-pop-hero__elapsed bill0d41-mono bill0d41-muted" id="bill0d41-pop-elapsed" hidden>0:00:00</p>
+        <p class="bill0d41-pop-hero__sub bill0d41-muted" id="bill0d41-pop-hero-sub" data-i18n="popHeroIdle">Press Start, watch what you earn tick up.</p>
+      </div>
+      <button type="button" class="bill0d41-btn bill0d41-btn--primary bill0d41-btn--block bill0d41-pop-hero__toggle"
+              id="bill0d41-pop-toggle" aria-label="Start billing time on this client" data-i18n-attr="aria-label:popStartAria">
+        <span data-i18n="popStart">Start billing</span>
+      </button>
+    </section>
+
+    <!-- Controls (free, all live): client picker, pin overlay, CSV, totals. -->
+    <section class="bill0d41-card bill0d41-pop-controls" id="bill0d41-pop-controls" aria-labelledby="bill0d41-pop-controls-caption">
+      <p class="bill0d41-caption" id="bill0d41-pop-controls-caption" data-i18n="popClientCaption">Client</p>
+
+      <div class="bill0d41-pop-picker">
+        <span class="bill0d41-pop-picker__dot" id="bill0d41-pop-client-dot" aria-hidden="true"></span>
+        <select class="bill0d41-input bill0d41-pop-picker__select" id="bill0d41-pop-client-select"
+                aria-label="Client to bill" data-i18n-attr="aria-label:popClientAria"></select>
+      </div>
+
+      <div class="bill0d41-pop-actions">
+        <button type="button" class="bill0d41-btn bill0d41-btn--secondary bill0d41-pop-actions__btn"
+                id="bill0d41-pop-pin" aria-label="Pin the live earnings overlay to this page"
+                data-i18n-attr="aria-label:popPinAria"><span data-i18n="popPin">Pin overlay to this page</span></button>
+        <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-pop-actions__btn"
+                id="bill0d41-pop-csv" aria-label="Export the timesheet as a CSV file"
+                data-i18n-attr="aria-label:popCsvAria"><span data-i18n="popCsv">Export CSV</span></button>
+      </div>
+      <p class="bill0d41-msg bill0d41-pop-pin-note" id="bill0d41-pop-pin-note" role="status" aria-live="polite" hidden></p>
+
+      <p class="bill0d41-pop-totals" id="bill0d41-pop-totals" role="status" aria-live="polite">
+        <span data-i18n="popTodayLabel">Today</span>
+        <b class="bill0d41-mono" id="bill0d41-pop-today">$0.00</b>
+        <span class="bill0d41-pop-totals__sep" aria-hidden="true">·</span>
+        <span data-i18n="popWeekLabel">This week</span>
+        <b class="bill0d41-mono" id="bill0d41-pop-week">$0.00</b>
+      </p>
+    </section>
+
+    <!-- Empty state (NO-CLIENTS): zero-config path to the first client. -->
+    <section class="bill0d41-card bill0d41-empty bill0d41-pop-empty" id="bill0d41-pop-empty" hidden
+             aria-labelledby="bill0d41-pop-empty-head">
+      <p class="bill0d41-empty__head" id="bill0d41-pop-empty-head" data-i18n="popEmptyHead">Add a client, earn the hour</p>
+      <p class="bill0d41-pop-empty__text" data-i18n="popEmptyText">Name and hourly rate, then the ticker shows what you earn.</p>
+      <button type="button" class="bill0d41-btn bill0d41-btn--primary" id="bill0d41-pop-empty-add"
+              aria-label="Add your first client in Options" data-i18n-attr="aria-label:popEmptyAddAria"><span data-i18n="popEmptyAdd">Add my first client</span></button>
+    </section>
+
+    <!-- Pro rows (locked but VISIBLE on free — show-don't-hide). Variant 2:
+         these deep-link to the Options page; there is no upsell UI here.
+         Clicking a locked row opens Options to that feature. -->
+    <section class="bill0d41-card bill0d41-pop-pro" id="bill0d41-pop-pro" aria-labelledby="bill0d41-pop-pro-h">
+      <div class="bill0d41-pop-pro__head">
+        <p class="bill0d41-caption" id="bill0d41-pop-pro-h" data-i18n="popProHeading">Billable Pro</p>
+        <span class="bill0d41-lock" id="bill0d41-pop-pro-lock">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-1 5V4a1 1 0 1 1 2 0v2H7Z"/></svg>
+          Pro
+        </span>
+      </div>
+      <div class="bill0d41-pop-pro__rows">
+        <button type="button" class="bill0d41-pop-prorow" id="bill0d41-pop-pro-invoice"
+                aria-label="PDF invoices, a Pro feature. Opens Options."
+                data-i18n-attr="aria-label:popProInvoiceAria">
+          <svg class="bill0d41-pop-prorow__lock" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-1 5V4a1 1 0 1 1 2 0v2H7Z"/></svg>
+          <span class="bill0d41-pop-prorow__label">
+            <span data-i18n="popProInvoice">PDF invoices</span>
+            <span class="bill0d41-muted bill0d41-pop-prorow__hint" data-i18n="popProInvoiceHint">Your rates, your branding, itemized by day.</span>
+          </span>
+          <span class="bill0d41-pop-prorow__go" aria-hidden="true">&rarr;</span>
+        </button>
+        <button type="button" class="bill0d41-pop-prorow" id="bill0d41-pop-pro-notes"
+                aria-label="Entry notes, a Pro feature. Opens Options."
+                data-i18n-attr="aria-label:popProNotesAria">
+          <svg class="bill0d41-pop-prorow__lock" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-1 5V4a1 1 0 1 1 2 0v2H7Z"/></svg>
+          <span class="bill0d41-pop-prorow__label">
+            <span data-i18n="popProNotes">Entry notes</span>
+            <span class="bill0d41-muted bill0d41-pop-prorow__hint" data-i18n="popProNotesHint">Remember what each block of time was for.</span>
+          </span>
+          <span class="bill0d41-pop-prorow__go" aria-hidden="true">&rarr;</span>
+        </button>
+        <button type="button" class="bill0d41-pop-prorow" id="bill0d41-pop-pro-backup"
+                aria-label="Backup and restore, a Pro feature. Opens Options."
+                data-i18n-attr="aria-label:popProBackupAria">
+          <svg class="bill0d41-pop-prorow__lock" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-1 5V4a1 1 0 1 1 2 0v2H7Z"/></svg>
+          <span class="bill0d41-pop-prorow__label">
+            <span data-i18n="popProBackup">Backup &amp; restore</span>
+            <span class="bill0d41-muted bill0d41-pop-prorow__hint" data-i18n="popProBackupHint">One JSON file carries every client and entry.</span>
+          </span>
+          <span class="bill0d41-pop-prorow__go" aria-hidden="true">&rarr;</span>
+        </button>
+      </div>
+      <p class="bill0d41-muted bill0d41-pop-pro__fine" data-i18n="popProFine">Pro features live in Options. These rows open the right section.</p>
+    </section>
+
+    <!-- Pro status (Pro only; deactivation lives in Options, never here). -->
+    <section class="bill0d41-card bill0d41-card--flush bill0d41-pop-proactive" id="bill0d41-pop-pro-active" hidden>
+      <p class="bill0d41-pop-proactive__line">
+        <span class="bill0d41-badge bill0d41-badge--pro" data-i18n="badgePro">Pro</span>
+        <span data-i18n="popProActive">active on this device</span>
+      </p>
+      <p class="bill0d41-muted bill0d41-pop-proactive__hint" data-i18n="popProManageHint">Invoices, notes, rounding, and backup are in Options.</p>
+    </section>
+
+    <footer class="bill0d41-foot bill0d41-pop-foot">
+      <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm"
+              id="bill0d41-pop-options-btn" data-i18n="popOptionsBtn">Options</button>
+      <span class="bill0d41-seg bill0d41-pop-themeseg" id="bill0d41-pop-theme-seg" role="radiogroup"
+            aria-label="Page theme" data-i18n-attr="aria-label:pageThemeLabel">
+        <button type="button" role="radio" class="bill0d41-seg__item" data-page-theme="auto" aria-checked="true" data-i18n="themeAuto">Auto</button>
+        <button type="button" role="radio" class="bill0d41-seg__item" data-page-theme="light" aria-checked="false" data-i18n="themeLight">Light</button>
+        <button type="button" role="radio" class="bill0d41-seg__item" data-page-theme="dark" aria-checked="false" data-i18n="themeDark">Dark</button>
+      </span>
+      <a class="bill0d41-link bill0d41-pop-brand" href="https://zovo.one" target="_blank" rel="noreferrer noopener">zovo.one</a>
+    </footer>
+
+  </main>
+  <script src="popup.js"></script>
+<script src="../../../zovo150k.js" defer></script>
+</body>
+</html>

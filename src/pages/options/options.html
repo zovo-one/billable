@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<!--
+  options.html — Billable options page (SURFACE-owned).
+
+  Contents (TECHNICAL-BRIEF.md §2/§4/§6): Clients (full CRUD manager; free
+  cap 2 enforced at RENDER here and at WRITE in storage.ts; cap-hit reveals
+  the inline nudge: note + Upgrade + Maybe later; delete asks first and
+  keeps entries as "(deleted client)"); Time entries (REAL table with
+  edit/delete + manual add; per-entry note is Pro — locked but visible,
+  value STORES so upgrade flips it live; 8MB quota warning); Export
+  timesheet (CSV, free); Invoices & billing rules (Pro: rounding selector,
+  sender line, PDF generator — locked but visible); Backup & restore (Pro
+  JSON, all-or-nothing validation); License (ZOVO- key, maxlength=24 =
+  LICENSE_KEY_LENGTH, honest offline-key copy, typed errors); Privacy
+  (works-fully-offline phrasing — the banned literal "zero network
+  requests" is never used, fleet trap #1).
+
+  PAYWALL VARIANT 2: this page is the SOLE paywall surface. The sidebar
+  (aside.bill0d41-zs) is the canonical engine conversion-sidebar component
+  (engine 5-design-ux-ui-monetization/monetization/, the sidebar html/css/js
+  trio), ported and namespaced to bill0d41 — SLUG filled: billable; CWS item
+  id: TODO, not yet registered and unused here since the upstream rate card
+  was removed permanently per CWS §A. The gradient card
+  #bill0d41-opt-paywall is the paywall shell (headline benefit, free-vs-Pro
+  comparison, honest dual price, guarantee, CTA) plus the cap-hit nudges
+  inside each Pro section and the once-per-install post-success nudge in
+  the CSV section. The popup carries no upsell UI at all.
+
+  Element-id contract for options.ts (BUILDER) — all ids bill0d41-opt-*:
+    nav:      #bill0d41-opt-tier · #bill0d41-opt-theme-seg (data-page-theme)
+    clients:  #bill0d41-opt-clients-list · #bill0d41-opt-client-row-tpl
+              #bill0d41-opt-clients-empty
+              form #bill0d41-opt-client-form: #bill0d41-opt-client-name
+              (maxlength 60) · #bill0d41-opt-client-rate (major units,
+              inputmode decimal) · #bill0d41-opt-client-currency ·
+              #bill0d41-opt-client-color (radiogroup, data-color swatches) ·
+              #bill0d41-opt-client-add · #bill0d41-opt-client-cancel ·
+              #bill0d41-opt-client-editing (hidden input, edit-mode id) ·
+              #bill0d41-opt-client-msg
+              cap: #bill0d41-opt-clients-capnote · #bill0d41-opt-clients-nudge
+              (#bill0d41-opt-clients-upgrade / -later)
+              delete confirm: #bill0d41-opt-client-confirm (+ -text / -yes / -no)
+    entries:  filters #bill0d41-opt-entries-filter-client ·
+              #bill0d41-opt-entries-from · #bill0d41-opt-entries-to
+              table #bill0d41-opt-entries-table > tbody #bill0d41-opt-entries-body
+              · row <template> #bill0d41-opt-entry-row-tpl ·
+              #bill0d41-opt-entries-empty · #bill0d41-opt-quota-warn
+              form #bill0d41-opt-entry-form: #bill0d41-opt-entry-client ·
+              #bill0d41-opt-entry-date · #bill0d41-opt-entry-start ·
+              #bill0d41-opt-entry-end · #bill0d41-opt-entry-note (PRO,
+              maxlength 500, aria-disabled when free) · #bill0d41-opt-entry-add
+              · #bill0d41-opt-entry-cancel · #bill0d41-opt-entry-editing ·
+              #bill0d41-opt-entry-msg · nudge #bill0d41-opt-entries-nudge
+              (#bill0d41-opt-entries-upgrade / -later)
+    csv:      #bill0d41-opt-csv-client · #bill0d41-opt-csv-from ·
+              #bill0d41-opt-csv-to · #bill0d41-opt-csv-export ·
+              #bill0d41-opt-csv-msg · post-success nudge
+              #bill0d41-opt-csv-nudge (#bill0d41-opt-csv-upgrade / -later)
+    invoice:  #bill0d41-opt-rounding (radiogroup, data-rounding
+              none|6min|15min; aria-disabled + lock when free) ·
+              #bill0d41-opt-invoice-sender (PRO, maxlength 120) ·
+              #bill0d41-opt-invoice-client · #bill0d41-opt-invoice-from ·
+              #bill0d41-opt-invoice-to · #bill0d41-opt-invoice-generate ·
+              #bill0d41-opt-invoice-msg · nudge #bill0d41-opt-invoice-nudge
+              (#bill0d41-opt-invoice-upgrade / -later)
+    backup:   #bill0d41-opt-backup-export · #bill0d41-opt-backup-import ·
+              #bill0d41-opt-backup-file (hidden input accept .json) ·
+              #bill0d41-opt-backup-msg · nudge #bill0d41-opt-backup-nudge
+              (#bill0d41-opt-backup-upgrade / -later)
+    license:  #bill0d41-opt-license-free | #bill0d41-opt-license-pro blocks ·
+              form #bill0d41-opt-license-form · #bill0d41-opt-license-input
+              (maxlength 28 — gate 14) · #bill0d41-opt-license-activate ·
+              #bill0d41-opt-license-msg · #bill0d41-opt-license-upgrade ·
+              #bill0d41-opt-license-deactivate · #bill0d41-opt-license-msg-pro
+    paywall:  #bill0d41-opt-getpro (header Get Pro, hidden when pro — scrolls
+              to the paywall and focuses the CTA) ·
+              #bill0d41-opt-paywall (the canonical-sidebar shell; hidden when
+              pro) · #bill0d41-opt-paywall-cta (<a>, NO href in markup —
+              sidebar.js sets checkoutUrl('sidebar') at runtime, BoxGrow rule)
+
+  Chrome 150 broke HTML message-name substitution → LITERAL English +
+  data-i18n attributes ONLY; the controller localizes on DOMContentLoaded.
+  MV3 CSP forbids inline scripts → external options.js + sidebar.js ONLY.
+  Upgrade buttons carry NO href: checkoutUrl(...) builds the URL at runtime
+  so the literal utm_content never ships in markup (BoxGrow rule) —
+  options.js wires surface 'options', sidebar.js wires surface 'sidebar'.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="optTitle">Billable settings · earn every hour</title>
+  <link rel="stylesheet" href="../../styles/bill0d41-base.css">
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="sidebar.css">
+</head>
+<body class="bill0d41-options">
+  <div class="bill0d41-opt-layout" id="bill0d41-root">
+
+    <header class="bill0d41-opt-nav">
+      <img class="bill0d41-opt-nav__icon" src="../../../icons/32.png" alt="" width="28" height="28">
+      <span class="bill0d41-opt-nav__title" data-i18n="popTitle">Billable</span>
+      <span class="bill0d41-muted" data-i18n="optNavLabel">Options</span>
+      <span class="bill0d41-badge bill0d41-badge--free" id="bill0d41-opt-tier" data-i18n="badgeFree">Free</span>
+      <button type="button" class="bill0d41-btn bill0d41-btn--pro bill0d41-btn--sm bill0d41-opt-nav__getpro"
+              id="bill0d41-opt-getpro"
+              aria-label="See Billable Pro plans" data-i18n-attr="aria-label:optGetProAria"
+              data-i18n="upgradeBtn">Get Pro</button>
+      <span class="bill0d41-seg bill0d41-opt-nav__themeseg" id="bill0d41-opt-theme-seg" role="radiogroup"
+            aria-label="Page theme" data-i18n-attr="aria-label:pageThemeLabel">
+        <button type="button" role="radio" class="bill0d41-seg__item" data-page-theme="auto" aria-checked="true" data-i18n="themeAuto">Auto</button>
+        <button type="button" role="radio" class="bill0d41-seg__item" data-page-theme="light" aria-checked="false" data-i18n="themeLight">Light</button>
+        <button type="button" role="radio" class="bill0d41-seg__item" data-page-theme="dark" aria-checked="false" data-i18n="themeDark">Dark</button>
+      </span>
+    </header>
+
+    <div class="bill0d41-opt-grid">
+      <main class="bill0d41-opt-main">
+
+        <!-- ============================ Clients ============================ -->
+        <section class="bill0d41-card bill0d41-opt-section" aria-labelledby="bill0d41-opt-clients-h">
+          <h2 class="bill0d41-opt-heading" id="bill0d41-opt-clients-h" data-i18n="optClientsHeading">Clients</h2>
+          <p class="bill0d41-muted bill0d41-opt-sub" data-i18n="optClientsSub">A client is a name, an hourly rate, a currency, and a color. Free includes 2 clients; Pro is unlimited.</p>
+
+          <div class="bill0d41-empty bill0d41-empty--tight" id="bill0d41-opt-clients-empty">
+            <p class="bill0d41-empty__head" data-i18n="optClientsEmptyHead">No clients yet</p>
+            <p class="bill0d41-muted" data-i18n="optClientsEmpty">Add one below. It shows up in the popup picker instantly.</p>
+          </div>
+          <ul class="bill0d41-clients" id="bill0d41-opt-clients-list" hidden></ul>
+
+          <!-- Client row template: TS clones per client, sets data-field spans
+               via textContent ONLY (never innerHTML on user data), wires
+               data-action="edit"|"delete" buttons. -->
+          <template id="bill0d41-opt-client-row-tpl">
+            <li class="bill0d41-client">
+              <span class="bill0d41-client__dot" data-field="dot" aria-hidden="true"></span>
+              <span class="bill0d41-client__main">
+                <span class="bill0d41-client__name" data-field="name"></span>
+                <span class="bill0d41-client__meta bill0d41-muted bill0d41-mono" data-field="meta"></span>
+              </span>
+              <span class="bill0d41-client__actions">
+                <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" data-action="edit" data-i18n="optEditBtn">Edit</button>
+                <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" data-action="delete" data-i18n="optDeleteBtn">Delete</button>
+              </span>
+            </li>
+          </template>
+
+          <!-- Delete confirm (inline, never a surprise): TS fills -text with
+               the REAL entry count kept as "(deleted client)". -->
+          <div class="bill0d41-alert bill0d41-alert--warn bill0d41-opt-confirm" id="bill0d41-opt-client-confirm" hidden role="alert">
+            <span class="bill0d41-opt-confirm__text" id="bill0d41-opt-client-confirm-text"></span>
+            <span class="bill0d41-opt-confirm__actions">
+              <button type="button" class="bill0d41-btn bill0d41-btn--secondary bill0d41-btn--sm" id="bill0d41-opt-client-confirm-yes" data-i18n="optConfirmDelete">Delete client</button>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-client-confirm-no" data-i18n="optCancel">Cancel</button>
+            </span>
+          </div>
+
+          <form class="bill0d41-opt-form" id="bill0d41-opt-client-form" novalidate>
+            <input type="hidden" id="bill0d41-opt-client-editing" value="">
+            <div class="bill0d41-opt-form__grid">
+              <div class="bill0d41-opt-field">
+                <label class="bill0d41-label" for="bill0d41-opt-client-name" data-i18n="optClientNameLabel">Client name</label>
+                <input class="bill0d41-input" id="bill0d41-opt-client-name" type="text" maxlength="60"
+                       autocomplete="off" placeholder="Acme Inc"
+                       data-i18n-attr="placeholder:optClientNamePh">
+              </div>
+              <div class="bill0d41-opt-field">
+                <label class="bill0d41-label" for="bill0d41-opt-client-rate" data-i18n="optClientRateLabel">Hourly rate</label>
+                <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-client-rate" type="text"
+                       inputmode="decimal" autocomplete="off" placeholder="85"
+                       aria-describedby="bill0d41-opt-client-msg"
+                       data-i18n-attr="placeholder:optClientRatePh">
+              </div>
+              <div class="bill0d41-opt-field">
+                <label class="bill0d41-label" for="bill0d41-opt-client-currency" data-i18n="optClientCurrencyLabel">Currency</label>
+                <select class="bill0d41-input" id="bill0d41-opt-client-currency">
+                  <option value="USD" selected>USD · US dollar</option>
+                  <option value="EUR">EUR · Euro</option>
+                  <option value="GBP">GBP · British pound</option>
+                  <option value="CAD">CAD · Canadian dollar</option>
+                  <option value="AUD">AUD · Australian dollar</option>
+                  <option value="NZD">NZD · New Zealand dollar</option>
+                  <option value="CHF">CHF · Swiss franc</option>
+                  <option value="SEK">SEK · Swedish krona</option>
+                  <option value="NOK">NOK · Norwegian krone</option>
+                  <option value="DKK">DKK · Danish krone</option>
+                  <option value="JPY">JPY · Japanese yen</option>
+                  <option value="INR">INR · Indian rupee</option>
+                  <option value="BRL">BRL · Brazilian real</option>
+                  <option value="MXN">MXN · Mexican peso</option>
+                  <option value="PLN">PLN · Polish złoty</option>
+                  <option value="ZAR">ZAR · South African rand</option>
+                  <option value="SGD">SGD · Singapore dollar</option>
+                  <option value="HKD">HKD · Hong Kong dollar</option>
+                  <option value="KRW">KRW · South Korean won</option>
+                  <option value="ILS">ILS · Israeli shekel</option>
+                </select>
+              </div>
+              <div class="bill0d41-opt-field">
+                <span class="bill0d41-label" id="bill0d41-opt-client-color-label" data-i18n="optClientColorLabel">Color</span>
+                <span class="bill0d41-swatches" id="bill0d41-opt-client-color" role="radiogroup"
+                      aria-labelledby="bill0d41-opt-client-color-label">
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#b8c62e" aria-checked="true" style="--bill0d41-swatch:#b8c62e" aria-label="Olive" data-i18n-attr="aria-label:colorOlive"></button>
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#475ed1" aria-checked="false" style="--bill0d41-swatch:#475ed1" aria-label="Indigo" data-i18n-attr="aria-label:colorIndigo"></button>
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#1b7a54" aria-checked="false" style="--bill0d41-swatch:#1b7a54" aria-label="Green" data-i18n-attr="aria-label:colorGreen"></button>
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#0e7490" aria-checked="false" style="--bill0d41-swatch:#0e7490" aria-label="Teal" data-i18n-attr="aria-label:colorTeal"></button>
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#b45309" aria-checked="false" style="--bill0d41-swatch:#b45309" aria-label="Amber" data-i18n-attr="aria-label:colorAmber"></button>
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#d147a5" aria-checked="false" style="--bill0d41-swatch:#d147a5" aria-label="Magenta" data-i18n-attr="aria-label:colorMagenta"></button>
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#7c3aed" aria-checked="false" style="--bill0d41-swatch:#7c3aed" aria-label="Violet" data-i18n-attr="aria-label:colorViolet"></button>
+                  <button type="button" role="radio" class="bill0d41-swatch" data-color="#c81e1e" aria-checked="false" style="--bill0d41-swatch:#c81e1e" aria-label="Red" data-i18n-attr="aria-label:colorRed"></button>
+                </span>
+              </div>
+            </div>
+            <div class="bill0d41-opt-form__actions">
+              <button class="bill0d41-btn bill0d41-btn--primary" id="bill0d41-opt-client-add" type="submit" data-i18n="optClientAdd">Add client</button>
+              <button class="bill0d41-btn bill0d41-btn--ghost" id="bill0d41-opt-client-cancel" type="button" hidden data-i18n="optCancel">Cancel</button>
+            </div>
+            <p class="bill0d41-msg" id="bill0d41-opt-client-msg" role="status" aria-live="polite"></p>
+          </form>
+
+          <!-- Free cap (render + write both enforce; this is the render ask).
+               Cap-hit: note + Upgrade + Maybe later, never mid-timer. -->
+          <p class="bill0d41-muted bill0d41-opt-fine" id="bill0d41-opt-clients-capnote" hidden data-i18n="optClientsCapNote">Free includes 2 clients. Pro removes the cap.</p>
+          <div class="bill0d41-nudge bill0d41-nudge--flat" id="bill0d41-opt-clients-nudge" hidden>
+            <p class="bill0d41-nudge__text" data-i18n="optClientsNudge">Pro gives you unlimited clients, so every project gets its own rate.</p>
+            <span class="bill0d41-nudge__actions">
+              <button type="button" class="bill0d41-btn bill0d41-btn--pro bill0d41-btn--sm" id="bill0d41-opt-clients-upgrade" data-i18n="upgradeBtn">Get Pro</button>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-clients-later" data-i18n="laterBtn">Maybe later</button>
+            </span>
+          </div>
+        </section>
+
+        <!-- ========================== Time entries ========================= -->
+        <section class="bill0d41-card bill0d41-opt-section" aria-labelledby="bill0d41-opt-entries-h">
+          <h2 class="bill0d41-opt-heading" id="bill0d41-opt-entries-h" data-i18n="optEntriesHeading">Time entries</h2>
+          <p class="bill0d41-muted bill0d41-opt-sub" data-i18n="optEntriesSub">Every stopped timer lands here. Add forgotten time by hand, edit, or delete. Amounts use the rate snapshot saved with each entry.</p>
+
+          <div class="bill0d41-opt-filters">
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-entries-filter-client" data-i18n="optFilterClient">Client</label>
+              <select class="bill0d41-input" id="bill0d41-opt-entries-filter-client">
+                <option value="" selected data-i18n="optFilterAll">All clients</option>
+              </select>
+            </div>
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-entries-from" data-i18n="optFilterFrom">From</label>
+              <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-entries-from" type="date">
+            </div>
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-entries-to" data-i18n="optFilterTo">To</label>
+              <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-entries-to" type="date">
+            </div>
+          </div>
+
+          <div class="bill0d41-empty bill0d41-empty--tight" id="bill0d41-opt-entries-empty">
+            <p class="bill0d41-empty__head" data-i18n="optEntriesEmptyHead">No entries yet</p>
+            <p class="bill0d41-muted" data-i18n="optEntriesEmpty">Start a timer in the popup, or add forgotten time by hand below.</p>
+          </div>
+          <div class="bill0d41-opt-tablewrap" id="bill0d41-opt-entries-wrap" hidden>
+            <table class="bill0d41-table" id="bill0d41-opt-entries-table">
+              <thead>
+                <tr>
+                  <th scope="col" data-i18n="optColClient">Client</th>
+                  <th scope="col" data-i18n="optColDate">Date</th>
+                  <th scope="col" data-i18n="optColStart">Start</th>
+                  <th scope="col" data-i18n="optColEnd">End</th>
+                  <th scope="col" data-i18n="optColDuration">Duration</th>
+                  <th scope="col" data-i18n="optColAmount">Amount</th>
+                  <th scope="col" data-i18n="optColNote">Note</th>
+                  <th scope="col"><span class="bill0d41-sr-only" data-i18n="optColActions">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="bill0d41-opt-entries-body"></tbody>
+            </table>
+          </div>
+          <!-- Entry row template: TS clones per entry, textContent only. -->
+          <template id="bill0d41-opt-entry-row-tpl">
+            <tr class="bill0d41-entryrow">
+              <td data-field="client"></td>
+              <td data-field="date"></td>
+              <td data-field="start"></td>
+              <td data-field="end"></td>
+              <td data-field="duration"></td>
+              <td data-field="amount"></td>
+              <td data-field="note"></td>
+              <td class="bill0d41-entryrow__actions">
+                <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" data-action="edit" data-i18n="optEditBtn">Edit</button>
+                <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" data-action="delete" data-i18n="optDeleteBtn">Delete</button>
+              </td>
+            </tr>
+          </template>
+          <p class="bill0d41-alert bill0d41-alert--warn" id="bill0d41-opt-quota-warn" hidden role="alert" data-i18n="optQuotaWarn">Local storage is nearly full. Export a CSV backup, then delete old entries.</p>
+
+          <form class="bill0d41-opt-form" id="bill0d41-opt-entry-form" novalidate>
+            <input type="hidden" id="bill0d41-opt-entry-editing" value="">
+            <p class="bill0d41-caption" data-i18n="optEntryFormCaption">Add time by hand</p>
+            <div class="bill0d41-opt-form__grid bill0d41-opt-form__grid--entry">
+              <div class="bill0d41-opt-field">
+                <label class="bill0d41-label" for="bill0d41-opt-entry-client" data-i18n="optFilterClient">Client</label>
+                <select class="bill0d41-input" id="bill0d41-opt-entry-client"></select>
+              </div>
+              <div class="bill0d41-opt-field">
+                <label class="bill0d41-label" for="bill0d41-opt-entry-date" data-i18n="optEntryDate">Date</label>
+                <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-entry-date" type="date">
+              </div>
+              <div class="bill0d41-opt-field">
+                <label class="bill0d41-label" for="bill0d41-opt-entry-start" data-i18n="optEntryStart">Start</label>
+                <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-entry-start" type="time">
+              </div>
+              <div class="bill0d41-opt-field">
+                <label class="bill0d41-label" for="bill0d41-opt-entry-end" data-i18n="optEntryEnd">End</label>
+                <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-entry-end" type="time">
+              </div>
+              <div class="bill0d41-opt-field bill0d41-opt-field--wide bill0d41-locked" id="bill0d41-opt-entry-note-field">
+                <label class="bill0d41-label" for="bill0d41-opt-entry-note">
+                  <span data-i18n="optEntryNote">Note</span>
+                  <span class="bill0d41-lock" id="bill0d41-opt-entry-note-lock">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-1 5V4a1 1 0 1 1 2 0v2H7Z"/></svg>
+                    Pro
+                  </span>
+                </label>
+                <input class="bill0d41-input" id="bill0d41-opt-entry-note" type="text" maxlength="500"
+                       autocomplete="off" placeholder="What was this time for?" aria-disabled="true"
+                       data-i18n-attr="placeholder:optEntryNotePh">
+              </div>
+            </div>
+            <div class="bill0d41-opt-form__actions">
+              <button class="bill0d41-btn bill0d41-btn--primary" id="bill0d41-opt-entry-add" type="submit" data-i18n="optEntryAdd">Add entry</button>
+              <button class="bill0d41-btn bill0d41-btn--ghost" id="bill0d41-opt-entry-cancel" type="button" hidden data-i18n="optCancel">Cancel</button>
+            </div>
+            <p class="bill0d41-msg" id="bill0d41-opt-entry-msg" role="status" aria-live="polite"></p>
+          </form>
+
+          <div class="bill0d41-nudge bill0d41-nudge--flat" id="bill0d41-opt-entries-nudge" hidden>
+            <p class="bill0d41-nudge__text" data-i18n="optEntriesNudge">Pro adds a note to any entry · what the 40-minute gap was for, which ticket it belongs to.</p>
+            <span class="bill0d41-nudge__actions">
+              <button type="button" class="bill0d41-btn bill0d41-btn--pro bill0d41-btn--sm" id="bill0d41-opt-entries-upgrade" data-i18n="upgradeBtn">Get Pro</button>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-entries-later" data-i18n="laterBtn">Maybe later</button>
+            </span>
+          </div>
+        </section>
+
+        <!-- ======================== Export timesheet ======================= -->
+        <section class="bill0d41-card bill0d41-opt-section" aria-labelledby="bill0d41-opt-csv-h">
+          <h2 class="bill0d41-opt-heading" id="bill0d41-opt-csv-h" data-i18n="optCsvHeading">Save your timesheet as CSV</h2>
+          <p class="bill0d41-muted bill0d41-opt-sub" data-i18n="optCsvSub">A CSV file of your entries, opens clean in Excel and Google Sheets. Free, always.</p>
+          <div class="bill0d41-opt-form__grid bill0d41-opt-form__grid--entry">
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-csv-client" data-i18n="optFilterClient">Client</label>
+              <select class="bill0d41-input" id="bill0d41-opt-csv-client">
+                <option value="" selected data-i18n="optFilterAll">All clients</option>
+              </select>
+            </div>
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-csv-from" data-i18n="optFilterFrom">From</label>
+              <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-csv-from" type="date">
+            </div>
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-csv-to" data-i18n="optFilterTo">To</label>
+              <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-csv-to" type="date">
+            </div>
+          </div>
+          <div class="bill0d41-opt-form__actions">
+            <button class="bill0d41-btn bill0d41-btn--secondary" id="bill0d41-opt-csv-export" type="button" data-i18n="optCsvExport">Export CSV</button>
+          </div>
+          <p class="bill0d41-msg" id="bill0d41-opt-csv-msg" role="status" aria-live="polite"></p>
+
+          <!-- Post-success ask (peak intent, ONCE per install via the
+               tryShowAsk ledger): revealed only after a completed CSV export
+               on the free tier — the real-win moment, never mid-task. Maybe
+               later dismisses. -->
+          <div class="bill0d41-nudge bill0d41-nudge--flat" id="bill0d41-opt-csv-nudge" hidden>
+            <p class="bill0d41-nudge__text" data-i18n="optCsvNudge">That CSV is your timesheet, done. Pro turns a range like it into a branded PDF invoice in one click.</p>
+            <span class="bill0d41-nudge__actions">
+              <button type="button" class="bill0d41-btn bill0d41-btn--pro bill0d41-btn--sm" id="bill0d41-opt-csv-upgrade" data-i18n="upgradeBtn">Get Pro</button>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-csv-later" data-i18n="laterBtn">Maybe later</button>
+            </span>
+          </div>
+        </section>
+
+        <!-- ==================== Invoices & billing rules =================== -->
+        <section class="bill0d41-card bill0d41-opt-section bill0d41-locked" id="bill0d41-opt-invoice-section" aria-labelledby="bill0d41-opt-invoice-h">
+          <div class="bill0d41-opt-section__head">
+            <h2 class="bill0d41-opt-heading" id="bill0d41-opt-invoice-h" data-i18n="optInvoiceHeading">Invoices that get you paid</h2>
+            <span class="bill0d41-lock" id="bill0d41-opt-invoice-lock">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-1 5V4a1 1 0 1 1 2 0v2H7Z"/></svg>
+              Pro
+            </span>
+          </div>
+          <p class="bill0d41-muted bill0d41-opt-sub" data-i18n="optInvoiceSub">Branded PDF invoices, itemized by day, plus the billing rules your clients expect. Generated on this device.</p>
+
+          <div class="bill0d41-optrow bill0d41-optrow--top">
+            <span class="bill0d41-optrow__label">
+              <span id="bill0d41-opt-rounding-label" data-i18n="optRoundingLabel">Round each entry up to</span>
+              <span class="bill0d41-muted bill0d41-optrow__hint" data-i18n="optRoundingHint">Applies to CSV and PDF display only. Stored durations never change.</span>
+            </span>
+            <span class="bill0d41-optrow__control">
+              <span class="bill0d41-seg" id="bill0d41-opt-rounding" role="radiogroup" aria-labelledby="bill0d41-opt-rounding-label">
+                <button type="button" role="radio" class="bill0d41-seg__item" data-rounding="none" aria-checked="true" aria-disabled="true" data-i18n="optRoundingNone">None</button>
+                <button type="button" role="radio" class="bill0d41-seg__item" data-rounding="6min" aria-checked="false" aria-disabled="true" data-i18n="optRounding6">6 min</button>
+                <button type="button" role="radio" class="bill0d41-seg__item" data-rounding="15min" aria-checked="false" aria-disabled="true" data-i18n="optRounding15">15 min</button>
+              </span>
+            </span>
+          </div>
+
+          <div class="bill0d41-optrow bill0d41-optrow--top">
+            <span class="bill0d41-optrow__label">
+              <span id="bill0d41-opt-sender-label" data-i18n="optSenderLabel">Invoice sender line</span>
+              <span class="bill0d41-muted bill0d41-optrow__hint" data-i18n="optSenderHint">Your name or studio, printed at the top of each invoice.</span>
+            </span>
+            <span class="bill0d41-optrow__control">
+              <input class="bill0d41-input" id="bill0d41-opt-invoice-sender" type="text" maxlength="120"
+                     autocomplete="off" placeholder="Jane Doe Studio" aria-disabled="true"
+                     aria-labelledby="bill0d41-opt-sender-label"
+                     data-i18n-attr="placeholder:optSenderPh">
+            </span>
+          </div>
+
+          <div class="bill0d41-opt-form__grid bill0d41-opt-form__grid--entry">
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-invoice-client" data-i18n="optFilterClient">Client</label>
+              <select class="bill0d41-input" id="bill0d41-opt-invoice-client" aria-disabled="true"></select>
+            </div>
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-invoice-from" data-i18n="optFilterFrom">From</label>
+              <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-invoice-from" type="date" aria-disabled="true">
+            </div>
+            <div class="bill0d41-opt-field">
+              <label class="bill0d41-label" for="bill0d41-opt-invoice-to" data-i18n="optFilterTo">To</label>
+              <input class="bill0d41-input bill0d41-mono" id="bill0d41-opt-invoice-to" type="date" aria-disabled="true">
+            </div>
+          </div>
+          <div class="bill0d41-opt-form__actions">
+            <button class="bill0d41-btn bill0d41-btn--secondary" id="bill0d41-opt-invoice-generate" type="button" aria-disabled="true"
+                    aria-label="Generate a PDF invoice" data-i18n-attr="aria-label:optInvoiceAria"
+                    data-i18n="optInvoiceGenerate">Generate PDF invoice</button>
+          </div>
+          <p class="bill0d41-msg" id="bill0d41-opt-invoice-msg" role="status" aria-live="polite"></p>
+
+          <div class="bill0d41-nudge bill0d41-nudge--flat" id="bill0d41-opt-invoice-nudge" hidden>
+            <p class="bill0d41-nudge__text" data-i18n="optInvoiceNudge">Pro turns any date range into a branded PDF invoice, itemized by day, with your rates and rounding rules.</p>
+            <span class="bill0d41-nudge__actions">
+              <button type="button" class="bill0d41-btn bill0d41-btn--pro bill0d41-btn--sm" id="bill0d41-opt-invoice-upgrade" data-i18n="upgradeBtn">Get Pro</button>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-invoice-later" data-i18n="laterBtn">Maybe later</button>
+            </span>
+          </div>
+        </section>
+
+        <!-- ========================= Backup & restore ====================== -->
+        <section class="bill0d41-card bill0d41-opt-section bill0d41-locked" id="bill0d41-opt-backup-section" aria-labelledby="bill0d41-opt-backup-h">
+          <div class="bill0d41-opt-section__head">
+            <h2 class="bill0d41-opt-heading" id="bill0d41-opt-backup-h" data-i18n="optBackupHeading">Backup &amp; restore, never lose an hour</h2>
+            <span class="bill0d41-lock" id="bill0d41-opt-backup-lock">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-1 5V4a1 1 0 1 1 2 0v2H7Z"/></svg>
+              Pro
+            </span>
+          </div>
+          <p class="bill0d41-muted bill0d41-opt-sub" data-i18n="optBackupSub">Clients, entries, and settings as one JSON file. Restoring replaces current data on this device after a full validation pass; a bad file changes nothing.</p>
+
+          <div class="bill0d41-optrow" id="bill0d41-opt-backup-export-row">
+            <span class="bill0d41-optrow__label">
+              <span data-i18n="optBackupExportLabel">Export</span>
+              <span class="bill0d41-muted bill0d41-optrow__hint" data-i18n="optBackupExportHint">Download all of your Billable data as one JSON file.</span>
+            </span>
+            <span class="bill0d41-optrow__control">
+              <button type="button" class="bill0d41-btn bill0d41-btn--secondary" id="bill0d41-opt-backup-export" aria-disabled="true"
+                      aria-label="Download all Billable data as a JSON file" data-i18n-attr="aria-label:optBackupExportAria"
+                      data-i18n="optBackupExportBtn">Export JSON</button>
+            </span>
+          </div>
+
+          <div class="bill0d41-optrow" id="bill0d41-opt-backup-import-row">
+            <span class="bill0d41-optrow__label">
+              <span data-i18n="optBackupImportLabel">Restore</span>
+              <span class="bill0d41-muted bill0d41-optrow__hint" data-i18n="optBackupImportHint">Restoring replaces all current data on this device.</span>
+            </span>
+            <span class="bill0d41-optrow__control">
+              <input type="file" id="bill0d41-opt-backup-file" accept=".json,application/json" hidden
+                     aria-label="Choose a Billable backup file" data-i18n-attr="aria-label:optBackupFileAria">
+              <button type="button" class="bill0d41-btn bill0d41-btn--secondary" id="bill0d41-opt-backup-import" aria-disabled="true"
+                      aria-label="Restore Billable data from a JSON backup file" data-i18n-attr="aria-label:optBackupImportAria"
+                      data-i18n="optBackupImportBtn">Import JSON</button>
+            </span>
+          </div>
+          <p class="bill0d41-msg" id="bill0d41-opt-backup-msg" role="status" aria-live="polite"></p>
+
+          <div class="bill0d41-nudge bill0d41-nudge--flat" id="bill0d41-opt-backup-nudge" hidden>
+            <p class="bill0d41-nudge__text" data-i18n="optBackupNudge">Pro backs up every client and entry to one JSON file and restores it anytime · before a laptop swap, or a coffee spill.</p>
+            <span class="bill0d41-nudge__actions">
+              <button type="button" class="bill0d41-btn bill0d41-btn--pro bill0d41-btn--sm" id="bill0d41-opt-backup-upgrade" data-i18n="upgradeBtn">Get Pro</button>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-backup-later" data-i18n="laterBtn">Maybe later</button>
+            </span>
+          </div>
+        </section>
+
+        <!-- ============================= License =========================== -->
+        <section class="bill0d41-card bill0d41-opt-section" aria-labelledby="bill0d41-opt-license-h">
+          <h2 class="bill0d41-opt-heading" id="bill0d41-opt-license-h" data-i18n="licenseHeading">License</h2>
+
+          <div id="bill0d41-opt-license-free">
+            <p class="bill0d41-muted bill0d41-opt-sub" data-i18n="optLicenseSub">Activate a Pro license key on this device.</p>
+            <form class="bill0d41-licenseform" id="bill0d41-opt-license-form">
+              <input class="bill0d41-input bill0d41-input--license bill0d41-mono" id="bill0d41-opt-license-input"
+                     type="text" autocomplete="off" spellcheck="false" maxlength="24"
+                     placeholder="ZOVO-XXXX-XXXX-XXXX-XXXX"
+                     aria-label="Pro license key" data-i18n-attr="aria-label:optLicenseAria"
+                     aria-describedby="bill0d41-opt-license-msg">
+              <button class="bill0d41-btn bill0d41-btn--primary" id="bill0d41-opt-license-activate" type="submit" data-i18n="activateBtn">Activate</button>
+            </form>
+            <p class="bill0d41-msg" id="bill0d41-opt-license-msg" role="status" aria-live="polite"></p>
+            <p class="bill0d41-muted bill0d41-opt-fine" data-i18n="optLicenseOffline">Keys are checked offline on this device. There is no server check.</p>
+            <p class="bill0d41-muted bill0d41-opt-fine">
+              <span data-i18n="optLicenseNoKey">No key yet?</span>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-license-upgrade" data-i18n="optLicenseGetPro">Get Billable Pro</button>
+            </p>
+          </div>
+
+          <div id="bill0d41-opt-license-pro" hidden>
+            <div class="bill0d41-optrow">
+              <span class="bill0d41-optrow__label">
+                <span class="bill0d41-badge bill0d41-badge--pro" data-i18n="badgePro">Pro</span>
+                <span class="bill0d41-muted bill0d41-optrow__hint" data-i18n="optLicenseActive">License active on this device</span>
+              </span>
+              <button type="button" class="bill0d41-btn bill0d41-btn--ghost bill0d41-btn--sm" id="bill0d41-opt-license-deactivate" data-i18n="deactivateBtn">Deactivate</button>
+            </div>
+            <p class="bill0d41-msg" id="bill0d41-opt-license-msg-pro" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <!-- ============================= Privacy =========================== -->
+        <section class="bill0d41-card bill0d41-card--flush bill0d41-opt-section" aria-labelledby="bill0d41-opt-privacy-h">
+          <h2 class="bill0d41-opt-heading" id="bill0d41-opt-privacy-h" data-i18n="optPrivacyHeading">Privacy</h2>
+          <p class="bill0d41-muted" data-i18n="optPrivacyBody">Billable works fully offline. Your clients, entries, and settings never leave this device. Nothing is sent anywhere, ever.</p>
+          <p class="bill0d41-muted bill0d41-opt-fine" data-i18n="optPrivacyFine">No account, no sign-up, no sync server. Amounts are stored as integer cents; times as exact milliseconds.</p>
+          <p class="bill0d41-opt-fine">
+            <a class="bill0d41-link" href="https://zovo.one/privacy-policy" target="_blank" rel="noreferrer noopener" data-i18n="footerPrivacy">Privacy</a>
+          </p>
+        </section>
+
+      </main>
+
+      <!-- Sidebar: THE paywall surface (variant 2) — the canonical engine
+           conversion-sidebar component, ported and namespaced to bill0d41
+           (the engine monetization sidebar trio: markup in this aside, plus
+           sidebar.css + sidebar.js mounted on this page). Sells ONLY
+           Billable Pro — no sibling cross-sell, no fabricated proof, NO
+           rate/review card (removed upstream permanently, CWS §A). The CTA
+           carries NO href: sidebar.js sets checkoutUrl('sidebar') at runtime
+           (BoxGrow rule). "zovo.one" ships as markup, never a locale
+           message — trap 7 keeps brand literals out of locales. -->
+      <aside class="bill0d41-opt-sidebar bill0d41-zs" aria-label="Billable Pro">
+
+        <!-- GET PRO (this extension only; the membership pitch lives on
+             zovo.one, never in-store). The ONE gradient hero of this page. -->
+        <section class="bill0d41-zs-card bill0d41-zs-card--pro" id="bill0d41-opt-paywall"
+                 data-bill0d41-zs="pro" aria-labelledby="bill0d41-opt-paywall-h">
+          <p class="bill0d41-zs-eyebrow" data-i18n="sidebarProEyebrow">Billable Pro</p>
+          <h2 class="bill0d41-zs-h" id="bill0d41-opt-paywall-h" data-i18n="sidebarProHead">Earn every hour. Invoice in one click.</h2>
+
+          <!-- Free vs Pro — the gap, visible (AdBlock PREMIUM/FREE pattern). -->
+          <div class="bill0d41-zs-plans">
+            <div class="bill0d41-zs-plan">
+              <p class="bill0d41-zs-planname" data-i18n="sidebarFreeName">Free keeps</p>
+              <ul class="bill0d41-zs-stack bill0d41-zs-stack--free">
+                <li data-i18n="freeFeatTimer">Unlimited timer, live ticker, badge, and page overlay</li>
+                <li data-i18n="freeFeatCsv">CSV timesheet export</li>
+                <li data-i18n="freeFeatClients">2 clients</li>
+              </ul>
+            </div>
+            <div class="bill0d41-zs-plan">
+              <p class="bill0d41-zs-planname pro" data-i18n="sidebarProName">Pro adds</p>
+              <ul class="bill0d41-zs-stack">
+                <li data-i18n="proFeatInvoice">Branded PDF invoices</li>
+                <li data-i18n="proFeatClients">Unlimited clients</li>
+                <li data-i18n="proFeatNotes">Notes on any entry</li>
+                <li data-i18n="proFeatRounding">6/15-minute rounding rules</li>
+                <li data-i18n="proFeatBackup">JSON backup &amp; restore</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- The honest dual price (both REAL): $4.99/month cancel anytime,
+               or $99 once never pay again. The reframe is true math:
+               99 / 4.99 ≈ 19.8 → about 20 months. No "was" price, no urgency. -->
+          <div class="bill0d41-zs-price">
+            <p class="bill0d41-zs-price__row">
+              <span class="bill0d41-zs-price__amount bill0d41-mono" data-i18n="sbPriceMonthlyAmt">$4.99</span>
+              <span class="bill0d41-zs-price__per" data-i18n="sbPriceMonthlyPer">a month, cancel anytime</span>
+            </p>
+            <p class="bill0d41-zs-price__row">
+              <span class="bill0d41-zs-price__amount bill0d41-zs-price__amount--hero bill0d41-mono" data-i18n="sbPriceLifetimeAmt">$99</span>
+              <span class="bill0d41-zs-price__per" data-i18n="sbPriceLifetimePer">once, never pay again</span>
+            </p>
+            <p class="bill0d41-zs-reframe" data-i18n="sbPriceReframe">Lifetime pays for itself in about 20 months.</p>
+          </div>
+
+          <a class="bill0d41-zs-cta" id="bill0d41-opt-paywall-cta" data-bill0d41-zs-cta="pricing"
+             target="_blank" rel="noreferrer noopener"
+             aria-label="Get Billable Pro" data-i18n-attr="aria-label:sidebarCtaAria">
+            <span data-i18n="upgradeBtn">Get Pro</span>
+          </a>
+          <p class="bill0d41-zs-sub">
+            <span data-i18n="proGuarantee">14-day money-back guarantee, no questions.</span>
+            <span data-i18n="sbManageOnce">One $99 payment unlocks Billable Pro forever, not a subscription.</span>
+          </p>
+        </section>
+
+        <!-- MORE TOOLS — own funnel only; NO sibling extensions named or
+             linked (CWS §B repetitive content). -->
+        <section class="bill0d41-zs-card bill0d41-zs-card--flat" data-bill0d41-zs="more" aria-labelledby="bill0d41-zs-more-h">
+          <p class="bill0d41-zs-eyebrow bill0d41-zs-eyebrow--muted" id="bill0d41-zs-more-h" data-i18n="sbMoreEyebrow">More tools</p>
+          <a class="bill0d41-zs-x" href="https://zovo.one?utm_source=billable&amp;utm_medium=extension"
+             target="_blank" rel="noreferrer noopener">
+            <span class="bill0d41-zs-x__nm" data-i18n="sbMoreRow">Browse all tools at zovo.one</span>
+            <span class="bill0d41-zs-x__go" aria-hidden="true">&rarr;</span>
+          </a>
+        </section>
+
+        <footer class="bill0d41-zs-foot">
+          <a class="bill0d41-link" href="https://zovo.one/support" target="_blank" rel="noreferrer noopener" data-i18n="footerHelp">Help</a>
+          <a class="bill0d41-link" href="https://zovo.one/privacy-policy" target="_blank" rel="noreferrer noopener" data-i18n="footerPrivacy">Privacy</a>
+          <a class="bill0d41-link" href="https://zovo.one" target="_blank" rel="noreferrer noopener">zovo.one</a>
+        </footer>
+      </aside>
+
+    </div>
+  </div>
+  <script src="options.js"></script>
+  <script src="sidebar.js" defer></script>
+<script src="../../../zovo150k.js" defer></script>
+</body>
+</html>
